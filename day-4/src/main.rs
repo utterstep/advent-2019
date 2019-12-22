@@ -72,13 +72,17 @@ fn main() -> Result<(), Box<dyn Error>> {
         Part::One => {
             println!(
                 "number of possible passwords: {}",
-                (config.min..=config.max).filter(|n| is_possible_password_weak(*n)).count()
+                (config.min..=config.max)
+                    .filter(|n| is_possible_password_weak(*n))
+                    .count()
             );
-        },
+        }
         Part::Two => {
             println!(
                 "number of possible passwords: {}",
-                (config.min..=config.max).filter(|n| is_possible_password_strong(*n)).count()
+                (config.min..=config.max)
+                    .filter(|n| is_possible_password_strong(*n))
+                    .count()
             );
         }
     }

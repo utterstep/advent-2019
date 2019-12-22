@@ -21,21 +21,25 @@ impl Wire {
             .filter(|p| !p.is_central_port())
     }
 
-    pub fn steps_to_intersections_with<'a>(&'a self, other: &'a Wire) -> impl Iterator<Item = (i32, Point)> + 'a {
-        iproduct!(self.segments.iter().enumerate(), other.segments.iter().enumerate())
-            .filter_map(|((i, s1), (j, s2))| s1.intersect(s2).map(|p| (i, j, p)))
-            .filter(|(_, _, p)| !p.is_central_port())
-            .map(move |(i, j, p)| {
-                // FIXME: use precomputed sums
-                let steps_taken =
-                    self.steps.iter().take(i).sum::<i32>() +
-                    other.steps.iter().take(j).sum::<i32>() +
-                    self.segments[i].distance_to_point(p) +
-                    other.segments[j].distance_to_point(p)
-                ;
+    pub fn steps_to_intersections_with<'a>(
+        &'a self,
+        other: &'a Wire,
+    ) -> impl Iterator<Item = (i32, Point)> + 'a {
+        iproduct!(
+            self.segments.iter().enumerate(),
+            other.segments.iter().enumerate()
+        )
+        .filter_map(|((i, s1), (j, s2))| s1.intersect(s2).map(|p| (i, j, p)))
+        .filter(|(_, _, p)| !p.is_central_port())
+        .map(move |(i, j, p)| {
+            // FIXME: use precomputed sums
+            let steps_taken = self.steps.iter().take(i).sum::<i32>()
+                + other.steps.iter().take(j).sum::<i32>()
+                + self.segments[i].distance_to_point(p)
+                + other.segments[j].distance_to_point(p);
 
-                (steps_taken, p)
-            })
+            (steps_taken, p)
+        })
     }
 }
 
@@ -49,20 +53,21 @@ impl FromStr for Wire {
 
 impl FromIterator<Direction> for Wire {
     fn from_iter<I: IntoIterator<Item = Direction>>(iter: I) -> Self {
-        let segments_and_steps =
-            iter.into_iter()
-                .fold(Vec::new(), |mut segments: Vec<(Segment, i32)>, direction| {
-                    let start = segments
-                        .last()
-                        .map(|s| s.0.end)
-                        .unwrap_or_else(|| (0, 0).into());
-                    let distance = direction.distance();
-                    let end = start + direction;
+        let segments_and_steps = iter.into_iter().fold(
+            Vec::new(),
+            |mut segments: Vec<(Segment, i32)>, direction| {
+                let start = segments
+                    .last()
+                    .map(|s| s.0.end)
+                    .unwrap_or_else(|| (0, 0).into());
+                let distance = direction.distance();
+                let end = start + direction;
 
-                    segments.push((Segment::new(start, end), distance));
+                segments.push((Segment::new(start, end), distance));
 
-                    segments
-                });
+                segments
+            },
+        );
 
         let (segments, steps) = segments_and_steps.into_iter().unzip();
 
@@ -99,23 +104,28 @@ mod tests {
         let mut intersections = w1.intersections_with(&w2).collect::<Vec<_>>();
         intersections.sort_by_key(Point::manhattan_to_zero);
 
-        assert_eq!(
-            intersections,
-            vec![(3, 3).into(), (6, 5).into()],
-        );
+        assert_eq!(intersections, vec![(3, 3).into(), (6, 5).into()],);
 
         // example 2
         let w1: Wire = "R75,D30,R83,U83,L12,D49,R71,U7,L72".parse().unwrap();
         let w2: Wire = "U62,R66,U55,R34,D71,R55,D58,R83".parse().unwrap();
 
-        let distance = w1.intersections_with(&w2).map(|p| p.manhattan_to_zero()).min();
+        let distance = w1
+            .intersections_with(&w2)
+            .map(|p| p.manhattan_to_zero())
+            .min();
         assert_eq!(distance, Some(159));
 
         // example 3
-        let w1: Wire = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51".parse().unwrap();
+        let w1: Wire = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51"
+            .parse()
+            .unwrap();
         let w2: Wire = "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7".parse().unwrap();
 
-        let distance = w1.intersections_with(&w2).map(|p| p.manhattan_to_zero()).min();
+        let distance = w1
+            .intersections_with(&w2)
+            .map(|p| p.manhattan_to_zero())
+            .min();
         assert_eq!(distance, Some(135));
     }
 
@@ -125,21 +135,32 @@ mod tests {
         let w1: Wire = "R8,U5,L5,D3".parse().unwrap();
         let w2: Wire = "U7,R6,D4,L4".parse().unwrap();
 
-        let steps = w1.steps_to_intersections_with(&w2).min_by_key(|(steps, _)| *steps).unwrap();
+        let steps = w1
+            .steps_to_intersections_with(&w2)
+            .min_by_key(|(steps, _)| *steps)
+            .unwrap();
         assert_eq!(steps.0, 30);
 
         // example 2
         let w1: Wire = "R75,D30,R83,U83,L12,D49,R71,U7,L72".parse().unwrap();
         let w2: Wire = "U62,R66,U55,R34,D71,R55,D58,R83".parse().unwrap();
 
-        let steps = w1.steps_to_intersections_with(&w2).min_by_key(|(steps, _)| *steps).unwrap();
+        let steps = w1
+            .steps_to_intersections_with(&w2)
+            .min_by_key(|(steps, _)| *steps)
+            .unwrap();
         assert_eq!(steps.0, 610);
 
         // example 3
-        let w1: Wire = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51".parse().unwrap();
+        let w1: Wire = "R98,U47,R26,D63,R33,U87,L62,D20,R33,U53,R51"
+            .parse()
+            .unwrap();
         let w2: Wire = "U98,R91,D20,R16,D67,R40,U7,R15,U6,R7".parse().unwrap();
 
-        let steps = w1.steps_to_intersections_with(&w2).min_by_key(|(steps, _)| *steps).unwrap();
+        let steps = w1
+            .steps_to_intersections_with(&w2)
+            .min_by_key(|(steps, _)| *steps)
+            .unwrap();
         assert_eq!(steps.0, 410);
     }
 }
