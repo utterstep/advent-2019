@@ -21,6 +21,7 @@ name = "day-2"
 version = "0.1.0"
 dependencies = [
  "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "intcode 0.1.0",
  "itertools 0.8.2 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -52,6 +53,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "serde 1.0.104 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
+
+[[package]]
+name = "intcode"
+version = "0.1.0"
 
 [[package]]
 name = "itertools"

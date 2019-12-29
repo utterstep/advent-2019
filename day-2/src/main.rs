@@ -3,12 +3,10 @@ use std::{error::Error, fs::File, io::Read};
 use advent_utils::{get_config, Part};
 use itertools::iproduct;
 
-mod intcode;
-
 use intcode::IntcodeInterpreter;
 
 // FIXME: extract to Config
-const TARGET: u32 = 19_690_720;
+const TARGET: i32 = 19_690_720;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
@@ -16,7 +14,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut code_str = String::new();
     File::open(config.input_file)?.read_to_string(&mut code_str)?;
 
-    let mut code: Vec<u32> = code_str
+    let mut code: Vec<i32> = code_str
         .trim()
         .split(',')
         .map(str::parse)
