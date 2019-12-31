@@ -26,10 +26,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             code[1] = 12;
             code[2] = 2;
 
-            let mut interpreter: IntcodeInterpreter = code.into();
-            interpreter.run().unwrap();
+            let interpreter: IntcodeInterpreter = code.into();
+            let halted = interpreter.run().unwrap();
 
-            println!("position 0 value is: {}", interpreter.get_code()[0]);
+            println!("position 0 value is: {}", halted.get_code()[0]);
         }
         Part::Two => {
             let res = iproduct!(0..100, 0..100).find_map(|(noun, verb)| {
@@ -37,9 +37,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 code[1] = noun;
                 code[2] = verb;
 
-                let mut interpreter: IntcodeInterpreter = code.into();
+                let interpreter: IntcodeInterpreter = code.into();
                 match interpreter.run() {
-                    Ok(_) => match interpreter.get_code()[0] {
+                    Ok(halted) => match halted.get_code()[0] {
                         TARGET => Some(noun * 100 + verb),
                         _ => None,
                     },
