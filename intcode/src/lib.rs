@@ -9,7 +9,13 @@ struct Parameter {
 }
 
 impl Parameter {
-    fn from_opcode(opcode: &Opcode, code: &[i32]) -> Result<Vec<Parameter>, IntcodeError> {
+    /// Creates iterator over params from opcode and code slice, starting from current element
+    ///
+    /// Returns iterator instead of vec to avoid allocation (~3x performance penalty)
+    fn from_opcode<'a>(
+        opcode: &'a Opcode,
+        code: &'a [i32],
+    ) -> Result<impl Iterator<Item = Parameter> + 'a, IntcodeError> {
         let parameters_count = opcode.parameters_count();
 
         Ok(code
@@ -17,12 +23,11 @@ impl Parameter {
             .ok_or(IntcodeError::IndexOutOfBounds)?
             .iter()
             .zip(opcode.parameter_modes.iter())
-            .map(|(&value, &mode)| Parameter { value, mode })
-            .collect())
+            .map(|(&value, &mode)| Parameter { value, mode }))
     }
 
     #[inline]
-    pub fn get(&self, code: &[i32]) -> Result<i32, IntcodeError> {
+    pub fn read(&self, code: &[i32]) -> Result<i32, IntcodeError> {
         match self.mode {
             ParameterMode::Immediate => Ok(self.value),
             ParameterMode::Position => code
@@ -33,9 +38,9 @@ impl Parameter {
     }
 
     #[inline]
-    pub fn set(&self, code: &mut [i32], value: i32) -> Result<(), IntcodeError> {
+    pub fn write(&self, code: &mut [i32], value: i32) -> Result<(), IntcodeError> {
         match self.mode {
-            ParameterMode::Immediate => Err(IntcodeError::InvalidTargetMode),
+            ParameterMode::Immediate => Err(IntcodeError::WriteToConstantProhibited),
             ParameterMode::Position => {
                 *(code
                     .get_mut(self.value as usize)
@@ -57,7 +62,7 @@ pub struct IntcodeInterpreter {
 #[derive(Debug)]
 pub enum IntcodeError {
     UnknownOpcode { opcode: i32, index: usize },
-    InvalidTargetMode,
+    WriteToConstantProhibited,
     IndexOutOfBounds,
 }
 
@@ -97,82 +102,87 @@ impl IntcodeInterpreter {
                 .ok_or(IntcodeError::IndexOutOfBounds)?;
             let opcode: Opcode = next_code.into();
 
-            let parameters =
+            let mut parameters =
                 Parameter::from_opcode(&opcode, &self.code[self.current_position + 1..])?;
 
-            macro_rules! unwrap_slice {
-                ($pattern: pat => $action: block) => {
-                    match parameters.as_slice() {
-                        $pattern => $action,
-                        _ => unreachable!(),
-                    }
+            macro_rules! process_params {
+                ([$($var: ident),+] => $action: block) => {
+                    $(let $var = parameters.next().unwrap();)+
+
+                    drop(parameters);
+
+                    $action
                 };
             }
 
             match opcode.operation {
                 Operation::Add => {
-                    unwrap_slice!([a, b, target] => {
-                        let a = a.get(&self.code)?;
-                        let b = b.get(&self.code)?;
+                    process_params!([a, b, target] => {
+                        let a = a.read(&self.code)?;
+                        let b = b.read(&self.code)?;
 
-                        target.set(&mut self.code, a + b)?
+                        target.write(&mut self.code, a + b)?;
                     });
                 }
                 Operation::Multiply => {
-                    unwrap_slice!([a, b, target] => {
-                        let a = a.get(&self.code)?;
-                        let b = b.get(&self.code)?;
+                    process_params!([a, b, target] => {
+                        let a = a.read(&self.code)?;
+                        let b = b.read(&self.code)?;
 
-                        target.set(&mut self.code, a * b)?
+                        target.write(&mut self.code, a * b)?;
                     });
                 }
                 Operation::Input => {
-                    unwrap_slice!([target] => {
-                        target.set(&mut self.code, *input_iter.next().ok_or(IntcodeError::IndexOutOfBounds)?)?
+                    process_params!([target] => {
+                        target.write(&mut self.code, *input_iter.next().ok_or(IntcodeError::IndexOutOfBounds)?)?;
                     });
                 }
                 Operation::Output => {
-                    unwrap_slice!([source] => {
-                        output.push(source.get(&self.code)?);
+                    process_params!([source] => {
+                        output.push(source.read(&self.code)?);
                     });
                 }
                 Operation::JumpIfTrue => {
-                    unwrap_slice!([param, target] => {
-                        if param.get(&self.code)? != 0 {
-                            self.current_position = target.get(&self.code)? as usize;
+                    process_params!([a, target] => {
+                        if a.read(&self.code)? != 0 {
+                            self.current_position = target.read(&self.code)? as usize;
 
                             continue;
                         }
                     });
                 }
                 Operation::JumpIfFalse => {
-                    unwrap_slice!([param, target] => {
-                        if param.get(&self.code)? == 0 {
-                            self.current_position = target.get(&self.code)? as usize;
+                    process_params!([a, target] => {
+                        if a.read(&self.code)? == 0 {
+                            self.current_position = target.read(&self.code)? as usize;
 
                             continue;
                         }
                     });
                 }
                 Operation::LessThan => {
-                    unwrap_slice!([a, b, target] => {
-                        if a.get(&self.code)? < b.get(&self.code)? {
-                            target.set(&mut self.code, 1)?;
+                    process_params!([a, b, target] => {
+                        if a.read(&self.code)? < b.read(&self.code)? {
+                            target.write(&mut self.code, 1)?;
                         } else {
-                            target.set(&mut self.code, 0)?;
+                            target.write(&mut self.code, 0)?;
                         }
                     });
                 }
                 Operation::Equals => {
-                    unwrap_slice!([a, b, target] => {
-                        if a.get(&self.code)? == b.get(&self.code)? {
-                            target.set(&mut self.code, 1)?;
+                    process_params!([a, b, target] => {
+                        if a.read(&self.code)? == b.read(&self.code)? {
+                            target.write(&mut self.code, 1)?;
                         } else {
-                            target.set(&mut self.code, 0)?;
+                            target.write(&mut self.code, 0)?;
                         }
                     });
                 }
-                Operation::End => break Ok(HaltedInterpreter::new(self.code, output)),
+                Operation::End => {
+                    drop(parameters);
+
+                    break Ok(HaltedInterpreter::new(self.code, output));
+                }
                 Operation::Unknown => {
                     break Err(IntcodeError::UnknownOpcode {
                         opcode: next_code,
@@ -276,7 +286,7 @@ mod tests {
         test_io!([1] => [
             3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
             1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
-            999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99
+            999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99,
         ], [999]);
         test_io!([8] => [
             3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
@@ -286,7 +296,7 @@ mod tests {
         test_io!([81] => [
             3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
             1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
-            999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99
+            999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99,
         ], [1001]);
     }
 }

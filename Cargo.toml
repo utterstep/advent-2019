@@ -9,3 +9,6 @@ members = [
     "day-4",
     "day-5",
 ]
+
+[profile.release]
+debug = true
