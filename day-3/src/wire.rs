@@ -12,7 +12,6 @@ use crate::{
 pub struct Wire {
     segments: Vec<Segment>,
     steps: Vec<i32>,
-    sums: Vec<i32>,
 }
 
 impl Wire {
@@ -33,9 +32,10 @@ impl Wire {
         .filter_map(|((i, s1), (j, s2))| s1.intersect(s2).map(|p| (i, j, p)))
         .filter(|(_, _, p)| !p.is_central_port())
         .map(move |(i, j, p)| {
-            // FIXME: use precomputed sums
-            let steps_taken = self.sums.get(i - 1).unwrap_or(&0)
-                + other.sums.get(j - 1).unwrap_or(&0)
+            // this is actually faster than precomputed sums approach...
+            // TODO: investigate
+            let steps_taken = self.steps.iter().take(i).sum::<i32>()
+                + other.steps.iter().take(j).sum::<i32>()
                 + self.segments[i].distance_to_point(p)
                 + other.segments[j].distance_to_point(p);
 
@@ -70,14 +70,9 @@ impl FromIterator<Direction> for Wire {
             },
         );
 
-        let (segments, steps): (_, Vec<_>) = segments_and_steps.into_iter().unzip();
-        let sums = steps.iter().fold(Vec::new(), |mut sums: Vec<i32>, step| {
-            sums.push(sums.last().unwrap_or(&0) + step);
+        let (segments, steps) = segments_and_steps.into_iter().unzip();
 
-            sums
-        });
-
-        Self { segments, steps, sums }
+        Self { segments, steps }
     }
 }
 
