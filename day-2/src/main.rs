@@ -1,15 +1,20 @@
 use std::{error::Error, fs::File, io::Read};
 
-use advent_utils::{get_config, Part};
+use advent_utils::{get_custom_config, Part};
 use itertools::iproduct;
+use serde::Deserialize;
 
 use intcode::IntcodeInterpreter;
 
-// FIXME: extract to Config
-const TARGET: i32 = 19_690_720;
+#[derive(Debug, Deserialize)]
+struct Config {
+    input_file: String,
+    part: Part,
+    target: Option<i32>,
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let config = get_config()?;
+    let config: Config = get_custom_config()?;
 
     let mut code_str = String::new();
     File::open(config.input_file)?.read_to_string(&mut code_str)?;
@@ -18,8 +23,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .trim()
         .split(',')
         .map(str::parse)
-        .map(Result::unwrap)
-        .collect();
+        .collect::<Result<_, _>>()?;
 
     match config.part {
         Part::One => {
@@ -32,6 +36,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("position 0 value is: {}", halted.get_code()[0]);
         }
         Part::Two => {
+            let target = config.target.expect("unspecified target for part two");
+
             let res = iproduct!(0..100, 0..100).find_map(|(noun, verb)| {
                 let mut code = code.clone();
                 code[1] = noun;
@@ -40,14 +46,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                 let interpreter: IntcodeInterpreter = code.into();
                 match interpreter.run() {
                     Ok(halted) => match halted.get_code()[0] {
-                        TARGET => Some(noun * 100 + verb),
+                        n if n == target => Some(noun * 100 + verb),
                         _ => None,
                     },
                     Err(_) => None,
                 }
             });
 
-            println!("noun and verb for target {} are: {}", TARGET, res.unwrap());
+            println!("noun and verb for target {} are: {}", target, res.unwrap());
         }
     }
 

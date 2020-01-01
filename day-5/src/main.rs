@@ -14,12 +14,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         .trim()
         .split(',')
         .map(str::parse)
-        .map(Result::unwrap)
-        .collect();
+        .collect::<Result<_, _>>()?;
+
+    let mut interpreter: IntcodeInterpreter = code.into();
 
     match config.part {
         Part::One => {
-            let mut interpreter: IntcodeInterpreter = code.into();
             interpreter.set_input([1].iter().copied());
 
             let halted = interpreter.run().unwrap();
@@ -27,7 +27,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("diagnostics output is: {:?}", halted.get_output());
         }
         Part::Two => {
-            let mut interpreter: IntcodeInterpreter = code.into();
             interpreter.set_input([5].iter().copied());
 
             let halted = interpreter.run().unwrap();
