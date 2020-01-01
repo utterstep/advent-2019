@@ -8,6 +8,7 @@ pub(crate) enum Operation {
     JumpIfFalse,
     LessThan,
     Equals,
+    AdjRelBase,
     End,
     Unknown,
 }
@@ -16,6 +17,7 @@ pub(crate) enum Operation {
 pub(crate) enum ParameterMode {
     Position,
     Immediate,
+    Relative,
 }
 
 #[derive(Debug)]
@@ -24,8 +26,8 @@ pub(crate) struct Opcode {
     pub parameter_modes: [ParameterMode; 3],
 }
 
-impl From<i32> for Opcode {
-    fn from(mut value: i32) -> Self {
+impl From<i64> for Opcode {
+    fn from(mut value: i64) -> Self {
         let operation = match value % 100 {
             1 => Operation::Add,
             2 => Operation::Multiply,
@@ -35,6 +37,7 @@ impl From<i32> for Opcode {
             6 => Operation::JumpIfFalse,
             7 => Operation::LessThan,
             8 => Operation::Equals,
+            9 => Operation::AdjRelBase,
             99 => Operation::End,
             _ => Operation::Unknown,
         };
@@ -45,10 +48,16 @@ impl From<i32> for Opcode {
         let mut i = 0;
 
         while value > 0 {
-            parameter_modes[i] = if value & 1 == 1 {
-                ParameterMode::Immediate
-            } else {
-                ParameterMode::Position
+            parameter_modes[i] = match value % 10 {
+                2 => ParameterMode::Relative,
+                1 => ParameterMode::Immediate,
+                0 => ParameterMode::Position,
+                _ => {
+                    return Self {
+                        operation: Operation::Unknown,
+                        parameter_modes,
+                    };
+                }
             };
 
             i += 1;
@@ -67,7 +76,7 @@ impl Opcode {
         match self.operation {
             Operation::Add | Operation::Multiply | Operation::LessThan | Operation::Equals => 3,
             Operation::JumpIfTrue | Operation::JumpIfFalse => 2,
-            Operation::Input | Operation::Output => 1,
+            Operation::Input | Operation::Output | Operation::AdjRelBase => 1,
             Operation::End | Operation::Unknown => 0,
         }
     }

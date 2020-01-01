@@ -51,8 +51,12 @@ dependencies = [
 ]
 
 [[package]]
-name = "day-6"
+name = "day-9"
 version = "0.1.0"
+dependencies = [
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "intcode 0.1.0",
+]
 
 [[package]]
 name = "either"

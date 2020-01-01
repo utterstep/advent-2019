@@ -10,7 +10,7 @@ use intcode::IntcodeInterpreter;
 struct Config {
     input_file: String,
     part: Part,
-    target: Option<i32>,
+    target: Option<i64>,
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -19,7 +19,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut code_str = String::new();
     File::open(config.input_file)?.read_to_string(&mut code_str)?;
 
-    let mut code: Vec<i32> = code_str
+    let mut code: Vec<_> = code_str
         .trim()
         .split(',')
         .map(str::parse)

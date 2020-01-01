@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             println!("diagnostics output is: {:?}", halted.get_output());
         }
         Part::Two => {
-            let halted = interpreter.run_with_input([5].iter().copied()).unwrap();
+            let halted = interpreter.run_with_input([2].iter().copied()).unwrap();
 
             println!("diagnostics output is: {:?}", halted.get_output());
         }

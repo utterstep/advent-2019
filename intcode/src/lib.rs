@@ -1,3 +1,5 @@
+use std::convert::TryInto;
+
 mod opcode;
 
 use opcode::{Opcode, Operation, ParameterMode};
@@ -5,7 +7,7 @@ use opcode::{Opcode, Operation, ParameterMode};
 #[derive(Debug)]
 struct Parameter {
     mode: ParameterMode,
-    value: i32,
+    value: i64,
 }
 
 impl Parameter {
@@ -14,92 +16,69 @@ impl Parameter {
     /// Returns iterator instead of vec to avoid allocation (~3x performance penalty)
     fn from_opcode<'a>(
         opcode: &'a Opcode,
-        code: &'a [i32],
+        code: &'a [i64],
     ) -> Result<impl Iterator<Item = Parameter> + 'a, IntcodeError> {
         let parameters_count = opcode.parameters_count();
 
         Ok(code
             .get(..parameters_count)
-            .ok_or(IntcodeError::IndexOutOfBounds)?
+            .ok_or(IntcodeError::PartialOpcode)?
             .iter()
             .zip(opcode.parameter_modes.iter())
             .map(|(&value, &mode)| Parameter { value, mode }))
-    }
-
-    #[inline]
-    pub fn read(&self, code: &[i32]) -> Result<i32, IntcodeError> {
-        match self.mode {
-            ParameterMode::Immediate => Ok(self.value),
-            ParameterMode::Position => code
-                .get(self.value as usize)
-                .copied()
-                .ok_or(IntcodeError::IndexOutOfBounds),
-        }
-    }
-
-    #[inline]
-    pub fn write(&self, code: &mut [i32], value: i32) -> Result<(), IntcodeError> {
-        match self.mode {
-            ParameterMode::Immediate => Err(IntcodeError::WriteToConstantProhibited),
-            ParameterMode::Position => {
-                *(code
-                    .get_mut(self.value as usize)
-                    .ok_or(IntcodeError::IndexOutOfBounds)?) = value;
-
-                Ok(())
-            }
-        }
     }
 }
 
 #[derive(Debug)]
 pub struct IntcodeInterpreter {
-    input: Vec<i32>,
-    code: Vec<i32>,
+    input: Vec<i64>,
+    code: Vec<i64>,
     current_position: usize,
+    relative_base: isize,
 }
 
 #[derive(Debug)]
 pub enum IntcodeError {
-    UnknownOpcode { opcode: i32, index: usize },
+    UnknownOpcode { opcode: i64, index: usize },
     WriteToConstantProhibited,
-    IndexOutOfBounds,
+    NegativeIndex { index: isize },
+    PartialOpcode,
+    InsufficientInputData,
 }
 
 #[derive(Debug)]
 pub struct HaltedInterpreter {
-    code: Vec<i32>,
-    output: Vec<i32>,
+    code: Vec<i64>,
+    output: Vec<i64>,
 }
 
 impl HaltedInterpreter {
-    fn new(code: Vec<i32>, output: Vec<i32>) -> Self {
+    fn new(code: Vec<i64>, output: Vec<i64>) -> Self {
         Self { code, output }
     }
 
-    pub fn get_code(&self) -> &Vec<i32> {
+    pub fn get_code(&self) -> &Vec<i64> {
         &self.code
     }
 
-    pub fn get_output(&self) -> &Vec<i32> {
+    pub fn get_output(&self) -> &Vec<i64> {
         &self.output
     }
 }
 
 impl IntcodeInterpreter {
-    pub fn set_input(&mut self, input: impl Iterator<Item = i32>) {
-        self.input = input.collect();
+    pub fn run(self) -> Result<HaltedInterpreter, IntcodeError> {
+        self.run_with_input(std::iter::empty())
     }
 
-    pub fn run(mut self) -> Result<HaltedInterpreter, IntcodeError> {
-        let mut input_iter = self.input.iter();
+    pub fn run_with_input(
+        mut self,
+        mut input: impl Iterator<Item = i64>,
+    ) -> Result<HaltedInterpreter, IntcodeError> {
         let mut output = Vec::new();
 
         loop {
-            let next_code = *self
-                .code
-                .get(self.current_position)
-                .ok_or(IntcodeError::IndexOutOfBounds)?;
+            let next_code = *self.code.get(self.current_position).unwrap_or(&0);
             let opcode: Opcode = next_code.into();
 
             let mut parameters =
@@ -118,34 +97,34 @@ impl IntcodeInterpreter {
             match opcode.operation {
                 Operation::Add => {
                     process_params!([a, b, target] => {
-                        let a = a.read(&self.code)?;
-                        let b = b.read(&self.code)?;
+                        let a = self.read(a)?;
+                        let b = self.read(b)?;
 
-                        target.write(&mut self.code, a + b)?;
+                        self.write(target, a + b)?;
                     });
                 }
                 Operation::Multiply => {
                     process_params!([a, b, target] => {
-                        let a = a.read(&self.code)?;
-                        let b = b.read(&self.code)?;
+                        let a = self.read(a)?;
+                        let b = self.read(b)?;
 
-                        target.write(&mut self.code, a * b)?;
+                        self.write(target, a * b)?;
                     });
                 }
                 Operation::Input => {
                     process_params!([target] => {
-                        target.write(&mut self.code, *input_iter.next().ok_or(IntcodeError::IndexOutOfBounds)?)?;
+                        self.write(target, input.next().ok_or(IntcodeError::InsufficientInputData)?)?;
                     });
                 }
                 Operation::Output => {
                     process_params!([source] => {
-                        output.push(source.read(&self.code)?);
+                        output.push(self.read(source)?);
                     });
                 }
                 Operation::JumpIfTrue => {
                     process_params!([a, target] => {
-                        if a.read(&self.code)? != 0 {
-                            self.current_position = target.read(&self.code)? as usize;
+                        if self.read(a)? != 0 {
+                            self.current_position = self.read(target)? as usize;
 
                             continue;
                         }
@@ -153,8 +132,8 @@ impl IntcodeInterpreter {
                 }
                 Operation::JumpIfFalse => {
                     process_params!([a, target] => {
-                        if a.read(&self.code)? == 0 {
-                            self.current_position = target.read(&self.code)? as usize;
+                        if self.read(a)? == 0 {
+                            self.current_position = self.read(target)? as usize;
 
                             continue;
                         }
@@ -162,20 +141,25 @@ impl IntcodeInterpreter {
                 }
                 Operation::LessThan => {
                     process_params!([a, b, target] => {
-                        if a.read(&self.code)? < b.read(&self.code)? {
-                            target.write(&mut self.code, 1)?;
+                        if self.read(a)? < self.read(b)? {
+                            self.write(target, 1)?;
                         } else {
-                            target.write(&mut self.code, 0)?;
+                            self.write(target, 0)?;
                         }
                     });
                 }
                 Operation::Equals => {
                     process_params!([a, b, target] => {
-                        if a.read(&self.code)? == b.read(&self.code)? {
-                            target.write(&mut self.code, 1)?;
+                        if self.read(a)? == self.read(b)? {
+                            self.write(target, 1)?;
                         } else {
-                            target.write(&mut self.code, 0)?;
+                            self.write(target, 0)?;
                         }
+                    });
+                }
+                Operation::AdjRelBase => {
+                    process_params!([value] => {
+                        self.relative_base += self.read(value)? as isize;
                     });
                 }
                 Operation::End => {
@@ -194,14 +178,89 @@ impl IntcodeInterpreter {
             self.current_position += opcode.parameters_count() + 1;
         }
     }
+
+    #[inline]
+    fn read(&mut self, param: Parameter) -> Result<i64, IntcodeError> {
+        match param.mode {
+            ParameterMode::Immediate => Ok(param.value),
+            ParameterMode::Position => {
+                let idx: usize =
+                    param
+                        .value
+                        .try_into()
+                        .map_err(|_| IntcodeError::NegativeIndex {
+                            index: param.value as isize,
+                        })?;
+
+                if idx >= self.code.len() {
+                    self.code.resize_with(idx + 1, Default::default);
+                }
+
+                Ok(self.code[idx])
+            }
+            ParameterMode::Relative => {
+                let idx: usize = (param.value as isize + self.relative_base)
+                    .try_into()
+                    .map_err(|_| IntcodeError::NegativeIndex {
+                        index: param.value as isize,
+                    })?;
+
+                if idx >= self.code.len() {
+                    self.code.resize_with(idx + 1, Default::default);
+                }
+
+                Ok(self.code[idx])
+            }
+        }
+    }
+
+    #[inline]
+    fn write(&mut self, param: Parameter, value: i64) -> Result<(), IntcodeError> {
+        match param.mode {
+            ParameterMode::Immediate => Err(IntcodeError::WriteToConstantProhibited),
+            ParameterMode::Position => {
+                let idx: usize =
+                    param
+                        .value
+                        .try_into()
+                        .map_err(|_| IntcodeError::NegativeIndex {
+                            index: param.value as isize,
+                        })?;
+
+                if idx >= self.code.len() {
+                    self.code.resize_with(idx + 1, Default::default);
+                }
+
+                self.code[idx] = value;
+
+                Ok(())
+            }
+            ParameterMode::Relative => {
+                let idx: usize = (param.value as isize + self.relative_base)
+                    .try_into()
+                    .map_err(|_| IntcodeError::NegativeIndex {
+                        index: param.value as isize,
+                    })?;
+
+                if idx >= self.code.len() {
+                    self.code.resize_with(idx + 1, Default::default);
+                }
+
+                self.code[idx] = value;
+
+                Ok(())
+            }
+        }
+    }
 }
 
-impl From<Vec<i32>> for IntcodeInterpreter {
-    fn from(code: Vec<i32>) -> Self {
+impl From<Vec<i64>> for IntcodeInterpreter {
+    fn from(code: Vec<i64>) -> Self {
         Self {
             input: Vec::new(),
             code,
             current_position: 0,
+            relative_base: 0,
         }
     }
 }
@@ -241,14 +300,17 @@ mod tests {
     fn test_intcode_io_examples() {
         macro_rules! test_io {
             ($input: expr => $code: expr, $expected: expr) => {
-                let mut interpreter: IntcodeInterpreter = $code.to_vec().into();
-                interpreter.set_input($input.into_iter().copied());
-                let halted = interpreter.run().unwrap();
+                let interpreter: IntcodeInterpreter = $code.to_vec().into();
+                let halted = interpreter
+                    .run_with_input($input.into_iter().copied())
+                    .unwrap();
 
                 let result = halted.get_output();
                 assert_eq!(result[..], $expected[..]);
             };
         }
+
+        // day-5
 
         // input equals 8 (positional)
         test_io!([1] => [3, 9, 8, 9, 10, 9, 4, 9, 99,-1, 8], [0]);
@@ -298,5 +360,18 @@ mod tests {
             1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
             999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99,
         ], [1001]);
+
+        // day-9
+
+        // quine
+        test_io!([] => [
+            109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99
+        ], [109, 1, 204, -1, 1001, 100, 1, 100, 1008, 100, 16, 101, 1006, 101, 0, 99]);
+
+        // 16-digit
+        test_io!([] => [1102, 34915192, 34915192, 7, 4, 7, 99, 0], [1219070632396864]);
+
+        // identity
+        test_io!([] => [104, 1125899906842624, 99], [1125899906842624]);
     }
 }
