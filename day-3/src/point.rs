@@ -28,15 +28,15 @@ pub struct Point {
 }
 
 impl Point {
-    pub fn is_central_port(&self) -> bool {
+    pub fn is_central_port(self) -> bool {
         self.x.0 == 0 && self.y.0 == 0
     }
 
-    pub fn manhattan_distance_to(&self, other: Point) -> i32 {
+    pub fn manhattan_distance_to(self, other: Point) -> i32 {
         (self.x.0 - other.x.0).abs() + (self.y.0 - other.y.0).abs()
     }
 
-    pub fn manhattan_to_zero(&self) -> i32 {
+    pub fn manhattan_to_zero(self) -> i32 {
         self.x.0.abs() + self.y.0.abs()
     }
 }
@@ -56,6 +56,7 @@ impl From<(X, Y)> for Point {
 impl std::ops::Add<Direction> for Point {
     type Output = Point;
 
+    #[allow(clippy::suspicious_arithmetic_impl)]
     fn add(self, rhs: Direction) -> Self::Output {
         match rhs {
             Direction::Up(distance) => (self.x.0, self.y.0 + distance).into(),

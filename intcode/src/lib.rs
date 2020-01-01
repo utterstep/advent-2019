@@ -111,7 +111,7 @@ impl IntcodeInterpreter {
 
                     drop(parameters);
 
-                    $action
+                    $action;
                 };
             }
 

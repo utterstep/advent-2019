@@ -103,7 +103,7 @@ mod tests {
         let w2: Wire = "U7,R6,D4,L4".parse().unwrap();
 
         let mut intersections = w1.intersections_with(&w2).collect::<Vec<_>>();
-        intersections.sort_by_key(Point::manhattan_to_zero);
+        intersections.sort_by_key(|p| p.manhattan_to_zero());
 
         assert_eq!(intersections, vec![(3, 3).into(), (6, 5).into()],);
 
