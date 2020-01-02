@@ -198,9 +198,7 @@ impl IntcodeInterpreter {
             ($idx: expr) => {{
                 let idx: usize = $idx
                     .try_into()
-                    .map_err(|_| IntcodeError::NegativeIndex {
-                        index: $idx,
-                    })?;
+                    .map_err(|_| IntcodeError::NegativeIndex { index: $idx })?;
 
                 Ok(*self.code.get(idx).unwrap_or(&0))
             }};
@@ -288,9 +286,7 @@ mod tests {
         macro_rules! test_io {
             ($input: expr => $code: expr, $expected: expr) => {
                 let interpreter: IntcodeInterpreter = $code.to_vec().into();
-                let halted = interpreter
-                    .run_with_input(&$input)
-                    .unwrap();
+                let halted = interpreter.run_with_input(&$input).unwrap();
 
                 let result = halted.get_output();
                 assert_eq!(result[..], $expected[..]);
