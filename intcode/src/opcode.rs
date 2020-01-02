@@ -49,9 +49,9 @@ impl From<i64> for Opcode {
 
         while value > 0 {
             parameter_modes[i] = match value % 10 {
-                2 => ParameterMode::Relative,
-                1 => ParameterMode::Immediate,
                 0 => ParameterMode::Position,
+                1 => ParameterMode::Immediate,
+                2 => ParameterMode::Relative,
                 _ => {
                     return Self {
                         operation: Operation::Unknown,

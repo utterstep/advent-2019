@@ -10,38 +10,19 @@ struct Parameter {
     value: i64,
 }
 
-impl Parameter {
-    /// Creates iterator over params from opcode and code slice, starting from current element
-    ///
-    /// Returns iterator instead of vec to avoid allocation (~3x performance penalty)
-    fn from_opcode<'a>(
-        opcode: &'a Opcode,
-        code: &'a [i64],
-    ) -> Result<impl Iterator<Item = Parameter> + 'a, IntcodeError> {
-        let parameters_count = opcode.parameters_count();
-
-        Ok(code
-            .get(..parameters_count)
-            .ok_or(IntcodeError::PartialOpcode)?
-            .iter()
-            .zip(opcode.parameter_modes.iter())
-            .map(|(&value, &mode)| Parameter { value, mode }))
-    }
-}
-
 #[derive(Debug)]
 pub struct IntcodeInterpreter {
     input: Vec<i64>,
     code: Vec<i64>,
     current_position: usize,
-    relative_base: isize,
+    relative_base: i64,
 }
 
 #[derive(Debug)]
 pub enum IntcodeError {
     UnknownOpcode { opcode: i64, index: usize },
     WriteToConstantProhibited,
-    NegativeIndex { index: isize },
+    NegativeIndex { index: i64 },
     PartialOpcode,
     InsufficientInputData,
 }
@@ -71,18 +52,26 @@ impl IntcodeInterpreter {
         self.run_with_input(std::iter::empty())
     }
 
-    pub fn run_with_input(
+    pub fn run_with_input<'a>(
         mut self,
-        mut input: impl Iterator<Item = i64>,
+        input: impl IntoIterator<Item = &'a i64>,
     ) -> Result<HaltedInterpreter, IntcodeError> {
+        let mut input = input.into_iter();
         let mut output = Vec::new();
+
+        #[cfg(debug_assertions)]
+        let mut opcode_counter = 0;
 
         loop {
             let next_code = *self.code.get(self.current_position).unwrap_or(&0);
             let opcode: Opcode = next_code.into();
 
-            let mut parameters =
-                Parameter::from_opcode(&opcode, &self.code[self.current_position + 1..])?;
+            #[cfg(debug_assertions)]
+            {
+                opcode_counter += 1;
+            }
+
+            let mut parameters = self.get_params(&opcode)?;
 
             macro_rules! process_params {
                 ([$($var: ident),+] => $action: block) => {
@@ -113,7 +102,7 @@ impl IntcodeInterpreter {
                 }
                 Operation::Input => {
                     process_params!([target] => {
-                        self.write(target, input.next().ok_or(IntcodeError::InsufficientInputData)?)?;
+                        self.write(target, *input.next().ok_or(IntcodeError::InsufficientInputData)?)?;
                     });
                 }
                 Operation::Output => {
@@ -159,11 +148,16 @@ impl IntcodeInterpreter {
                 }
                 Operation::AdjRelBase => {
                     process_params!([value] => {
-                        self.relative_base += self.read(value)? as isize;
+                        self.relative_base += self.read(value)?;
                     });
                 }
                 Operation::End => {
                     drop(parameters);
+
+                    #[cfg(debug_assertions)]
+                    {
+                        println!("{} opcodes processed", opcode_counter);
+                    }
 
                     break Ok(HaltedInterpreter::new(self.code, output));
                 }
@@ -179,77 +173,70 @@ impl IntcodeInterpreter {
         }
     }
 
+    /// Creates iterator over params from opcode and code slice, starting from current element
+    ///
+    /// Returns iterator instead of vec to avoid allocation (~3x performance penalty)
+    #[inline]
+    fn get_params<'a>(
+        &'a self,
+        opcode: &'a Opcode,
+    ) -> Result<impl Iterator<Item = Parameter> + 'a, IntcodeError> {
+        let parameters_count = opcode.parameters_count();
+        let code = &self.code[self.current_position + 1..];
+
+        Ok(code
+            .get(..parameters_count)
+            .ok_or(IntcodeError::PartialOpcode)?
+            .iter()
+            .zip(opcode.parameter_modes.iter())
+            .map(|(&value, &mode)| Parameter { value, mode }))
+    }
+
     #[inline]
     fn read(&mut self, param: Parameter) -> Result<i64, IntcodeError> {
-        match param.mode {
-            ParameterMode::Immediate => Ok(param.value),
-            ParameterMode::Position => {
-                let idx: usize =
-                    param
-                        .value
-                        .try_into()
-                        .map_err(|_| IntcodeError::NegativeIndex {
-                            index: param.value as isize,
-                        })?;
-
-                if idx >= self.code.len() {
-                    self.code.resize_with(idx + 1, Default::default);
-                }
-
-                Ok(self.code[idx])
-            }
-            ParameterMode::Relative => {
-                let idx: usize = (param.value as isize + self.relative_base)
+        macro_rules! read_default {
+            ($idx: expr) => {{
+                let idx: usize = $idx
                     .try_into()
                     .map_err(|_| IntcodeError::NegativeIndex {
-                        index: param.value as isize,
+                        index: $idx,
                     })?;
 
-                if idx >= self.code.len() {
-                    self.code.resize_with(idx + 1, Default::default);
-                }
+                Ok(*self.code.get(idx).unwrap_or(&0))
+            }};
+        }
 
-                Ok(self.code[idx])
-            }
+        match param.mode {
+            ParameterMode::Immediate => Ok(param.value),
+            ParameterMode::Position => read_default!(param.value),
+            ParameterMode::Relative => read_default!(self.relative_base + param.value),
         }
     }
 
     #[inline]
     fn write(&mut self, param: Parameter, value: i64) -> Result<(), IntcodeError> {
+        macro_rules! write_with_resize {
+            ($idx: expr) => {{
+                let idx: usize = $idx
+                    .try_into()
+                    .map_err(|_| IntcodeError::NegativeIndex { index: param.value })?;
+
+                if idx >= self.code.len() {
+                    self.code.resize_with(idx + 1, Default::default);
+                }
+
+                unsafe {
+                    *self.code.get_unchecked_mut(idx) = value;
+                }
+
+                Ok(())
+            }};
+        }
+
         match param.mode {
             ParameterMode::Immediate => Err(IntcodeError::WriteToConstantProhibited),
-            ParameterMode::Position => {
-                let idx: usize =
-                    param
-                        .value
-                        .try_into()
-                        .map_err(|_| IntcodeError::NegativeIndex {
-                            index: param.value as isize,
-                        })?;
-
-                if idx >= self.code.len() {
-                    self.code.resize_with(idx + 1, Default::default);
-                }
-
-                self.code[idx] = value;
-
-                Ok(())
-            }
-            ParameterMode::Relative => {
-                let idx: usize = (param.value as isize + self.relative_base)
-                    .try_into()
-                    .map_err(|_| IntcodeError::NegativeIndex {
-                        index: param.value as isize,
-                    })?;
-
-                if idx >= self.code.len() {
-                    self.code.resize_with(idx + 1, Default::default);
-                }
-
-                self.code[idx] = value;
-
-                Ok(())
-            }
+            ParameterMode::Position => write_with_resize!(param.value),
+            ParameterMode::Relative => write_with_resize!(self.relative_base + param.value),
         }
     }
 }
@@ -302,7 +289,7 @@ mod tests {
             ($input: expr => $code: expr, $expected: expr) => {
                 let interpreter: IntcodeInterpreter = $code.to_vec().into();
                 let halted = interpreter
-                    .run_with_input($input.into_iter().copied())
+                    .run_with_input(&$input)
                     .unwrap();
 
                 let result = halted.get_output();
