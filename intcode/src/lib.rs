@@ -45,6 +45,10 @@ impl HaltedInterpreter {
     pub fn get_output(&self) -> &Vec<i64> {
         &self.output
     }
+
+    pub fn into_output(self) -> Vec<i64> {
+        self.output
+    }
 }
 
 impl IntcodeInterpreter {
