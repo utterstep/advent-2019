@@ -34,16 +34,29 @@ fn get_amplifier_loop_results<'a>(
         .collect::<Vec<_>>();
 
     loop {
+        // 0 — initial input.
+        // Here I do mask situation, when last VM has no output after first cycle
+        // TODO: maybe check this case?
         let mut latest_output = *vms.last()?.get_output().ok()?.last().unwrap_or(&0);
         for vm in &mut vms {
             match vm.get_state() {
+                // return output if we found halted VM.
+                // bases on condition that all VMs halt at the same time, one after another
                 InterpreterState::Halted => return Some(latest_output),
+                // feed last output to next VM
                 InterpreterState::WaitingForInput => {
                     vm.run_with_input(once(&latest_output));
 
                     latest_output = *vm.get_output().ok()?.last()?;
                 }
-                InterpreterState::Failed(_) => return None,
+                // return, discarding error
+                // shouldn't be the case, if VM codes and settings are correct
+                InterpreterState::Failed(_) => {
+                    eprintln!("VM failure");
+
+                    return None;
+                }
+                // unreachable, as every VM is initialized using settings
                 InterpreterState::Initial => unreachable!(),
             }
         }
