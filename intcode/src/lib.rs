@@ -1,255 +1,88 @@
-use std::convert::TryInto;
-
 mod opcode;
+mod vm;
 
-use opcode::{Opcode, Operation, ParameterMode};
+pub use vm::IntcodeVmError;
+use vm::{IntcodeVM, IntcodeVmStopCause};
 
-#[derive(Debug)]
-struct Parameter {
-    mode: ParameterMode,
-    value: i64,
+#[derive(Debug, Clone, Copy)]
+pub enum InterpreterState {
+    Initial,
+    Halted,
+    WaitingForInput,
+    Failed(IntcodeVmError),
 }
 
-#[derive(Debug)]
-pub struct IntcodeInterpreter {
-    input: Vec<i64>,
-    code: Vec<i64>,
-    current_position: usize,
-    relative_base: i64,
-}
-
-#[derive(Debug)]
-pub enum IntcodeError {
-    UnknownOpcode { opcode: i64, index: usize },
-    WriteToConstantProhibited,
-    NegativeIndex { index: i64 },
-    PartialOpcode,
-    InsufficientInputData,
-}
-
-#[derive(Debug)]
-pub struct HaltedInterpreter {
-    code: Vec<i64>,
+pub struct Interpreter {
+    state: InterpreterState,
+    vm: IntcodeVM,
     output: Vec<i64>,
 }
 
-impl HaltedInterpreter {
-    fn new(code: Vec<i64>, output: Vec<i64>) -> Self {
-        Self { code, output }
-    }
-
-    pub fn get_code(&self) -> &Vec<i64> {
-        &self.code
-    }
-
-    pub fn get_output(&self) -> &Vec<i64> {
-        &self.output
-    }
-
-    pub fn into_output(self) -> Vec<i64> {
-        self.output
-    }
-}
-
-impl IntcodeInterpreter {
-    pub fn run(self) -> Result<HaltedInterpreter, IntcodeError> {
+impl Interpreter {
+    pub fn run(&mut self) {
         self.run_with_input(std::iter::empty())
     }
 
-    pub fn run_with_input<'a>(
-        mut self,
-        input: impl IntoIterator<Item = &'a i64>,
-    ) -> Result<HaltedInterpreter, IntcodeError> {
-        let mut input = input.into_iter();
-        let mut output = Vec::new();
+    pub fn run_with_input<'a>(&mut self, input: impl IntoIterator<Item = &'a i64>) {
+        match self.state {
+            InterpreterState::Halted | InterpreterState::Failed(_) => {}
+            InterpreterState::Initial | InterpreterState::WaitingForInput => {
+                let vm = &mut self.vm;
 
-        #[cfg(debug_assertions)]
-        let mut opcode_counter = 0;
-
-        loop {
-            let next_code = *self.code.get(self.current_position).unwrap_or(&0);
-            let opcode: Opcode = next_code.into();
-
-            #[cfg(debug_assertions)]
-            {
-                opcode_counter += 1;
-            }
-
-            let mut parameters = self.get_params(&opcode)?;
-
-            macro_rules! process_params {
-                ([$($var: ident),+] => $action: block) => {
-                    $(let $var = parameters.next().unwrap();)+
-
-                    drop(parameters);
-
-                    $action;
-                };
-            }
-
-            match opcode.operation {
-                Operation::Add => {
-                    process_params!([a, b, target] => {
-                        let a = self.read(a)?;
-                        let b = self.read(b)?;
-
-                        self.write(target, a + b)?;
-                    });
-                }
-                Operation::Multiply => {
-                    process_params!([a, b, target] => {
-                        let a = self.read(a)?;
-                        let b = self.read(b)?;
-
-                        self.write(target, a * b)?;
-                    });
-                }
-                Operation::Input => {
-                    process_params!([target] => {
-                        self.write(target, *input.next().ok_or(IntcodeError::InsufficientInputData)?)?;
-                    });
-                }
-                Operation::Output => {
-                    process_params!([source] => {
-                        output.push(self.read(source)?);
-                    });
-                }
-                Operation::JumpIfTrue => {
-                    process_params!([a, target] => {
-                        if self.read(a)? != 0 {
-                            self.current_position = self.read(target)? as usize;
-
-                            continue;
-                        }
-                    });
-                }
-                Operation::JumpIfFalse => {
-                    process_params!([a, target] => {
-                        if self.read(a)? == 0 {
-                            self.current_position = self.read(target)? as usize;
-
-                            continue;
-                        }
-                    });
-                }
-                Operation::LessThan => {
-                    process_params!([a, b, target] => {
-                        if self.read(a)? < self.read(b)? {
-                            self.write(target, 1)?;
-                        } else {
-                            self.write(target, 0)?;
-                        }
-                    });
-                }
-                Operation::Equals => {
-                    process_params!([a, b, target] => {
-                        if self.read(a)? == self.read(b)? {
-                            self.write(target, 1)?;
-                        } else {
-                            self.write(target, 0)?;
-                        }
-                    });
-                }
-                Operation::AdjRelBase => {
-                    process_params!([value] => {
-                        self.relative_base += self.read(value)?;
-                    });
-                }
-                Operation::End => {
-                    drop(parameters);
-
-                    #[cfg(debug_assertions)]
-                    {
-                        println!("{} opcodes processed", opcode_counter);
+                match vm.run_with_io(input, &mut self.output) {
+                    Ok(IntcodeVmStopCause::Halted) => self.state = InterpreterState::Halted,
+                    Ok(IntcodeVmStopCause::WaitingForInput) => {
+                        self.state = InterpreterState::WaitingForInput
                     }
-
-                    break Ok(HaltedInterpreter::new(self.code, output));
+                    Err(e) => self.state = InterpreterState::Failed(e),
                 }
-                Operation::Unknown => {
-                    break Err(IntcodeError::UnknownOpcode {
-                        opcode: next_code,
-                        index: self.current_position,
-                    })
+
+                #[cfg(debug_assertions)]
+                match self.state {
+                    InterpreterState::Failed(_) | InterpreterState::Halted => {
+                        println!(
+                            "VM stopped: {} opcodes processed",
+                            self.vm.processed_opcode_counter
+                        );
+                    }
+                    _ => {}
                 }
             }
-
-            self.current_position += opcode.parameters_count() + 1;
         }
     }
 
-    /// Creates iterator over params from opcode and code slice, starting from current element
-    ///
-    /// Returns iterator instead of vec to avoid allocation (~3x performance penalty)
-    #[inline]
-    fn get_params<'a>(
-        &'a self,
-        opcode: &'a Opcode,
-    ) -> Result<impl Iterator<Item = Parameter> + 'a, IntcodeError> {
-        let parameters_count = opcode.parameters_count();
-        let code = &self.code[self.current_position + 1..];
-
-        Ok(code
-            .get(..parameters_count)
-            .ok_or(IntcodeError::PartialOpcode)?
-            .iter()
-            .zip(opcode.parameter_modes.iter())
-            .map(|(&value, &mode)| Parameter { value, mode }))
+    pub fn get_state(&self) -> InterpreterState {
+        self.state
     }
 
-    #[inline]
-    fn read(&mut self, param: Parameter) -> Result<i64, IntcodeError> {
-        macro_rules! read_default {
-            ($idx: expr) => {{
-                let idx: usize = $idx
-                    .try_into()
-                    .map_err(|_| IntcodeError::NegativeIndex { index: $idx })?;
-
-                Ok(*self.code.get(idx).unwrap_or(&0))
-            }};
-        }
-
-        match param.mode {
-            ParameterMode::Immediate => Ok(param.value),
-            ParameterMode::Position => read_default!(param.value),
-            ParameterMode::Relative => read_default!(self.relative_base + param.value),
+    pub fn get_code(&self) -> Result<&[i64], IntcodeVmError> {
+        match self.state {
+            InterpreterState::Failed(e) => Err(e),
+            _ => Ok(self.vm.get_code()),
         }
     }
 
-    #[inline]
-    fn write(&mut self, param: Parameter, value: i64) -> Result<(), IntcodeError> {
-        macro_rules! write_with_resize {
-            ($idx: expr) => {{
-                let idx: usize = $idx
-                    .try_into()
-                    .map_err(|_| IntcodeError::NegativeIndex { index: param.value })?;
-
-                if idx >= self.code.len() {
-                    self.code.resize_with(idx + 1, Default::default);
-                }
-
-                unsafe {
-                    *self.code.get_unchecked_mut(idx) = value;
-                }
-
-                Ok(())
-            }};
+    pub fn get_output(&self) -> Result<&[i64], IntcodeVmError> {
+        match self.state {
+            InterpreterState::Failed(e) => Err(e),
+            _ => Ok(&self.output),
         }
+    }
 
-        match param.mode {
-            ParameterMode::Immediate => Err(IntcodeError::WriteToConstantProhibited),
-            ParameterMode::Position => write_with_resize!(param.value),
-            ParameterMode::Relative => write_with_resize!(self.relative_base + param.value),
+    pub fn into_output(self) -> Result<Vec<i64>, IntcodeVmError> {
+        match self.state {
+            InterpreterState::Failed(e) => Err(e),
+            _ => Ok(self.output),
         }
     }
 }
 
-impl From<Vec<i64>> for IntcodeInterpreter {
+impl From<Vec<i64>> for Interpreter {
     fn from(code: Vec<i64>) -> Self {
         Self {
-            input: Vec::new(),
-            code,
-            current_position: 0,
-            relative_base: 0,
+            state: InterpreterState::Initial,
+            output: Vec::new(),
+            vm: code.into(),
         }
     }
 }
@@ -262,10 +95,10 @@ mod tests {
     fn test_examples() {
         macro_rules! test_intcode {
             ($input: expr, $expected: expr) => {
-                let interpreter: IntcodeInterpreter = $input.to_vec().into();
-                let halted = interpreter.run().unwrap();
+                let mut interpreter: Interpreter = $input.to_vec().into();
+                interpreter.run();
 
-                let result = halted.get_code();
+                let result = interpreter.get_code().unwrap();
                 assert_eq!(result[..], $expected[..]);
             };
         }
@@ -289,10 +122,10 @@ mod tests {
     fn test_intcode_io_examples() {
         macro_rules! test_io {
             ($input: expr => $code: expr, $expected: expr) => {
-                let interpreter: IntcodeInterpreter = $code.to_vec().into();
-                let halted = interpreter.run_with_input(&$input).unwrap();
+                let mut interpreter: Interpreter = $code.to_vec().into();
+                interpreter.run_with_input(&$input);
 
-                let result = halted.get_output();
+                let result = interpreter.get_output().unwrap();
                 assert_eq!(result[..], $expected[..]);
             };
         }

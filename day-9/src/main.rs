@@ -2,7 +2,7 @@ use std::{error::Error, fs::File, io::Read};
 
 use advent_utils::{get_config, Part};
 
-use intcode::IntcodeInterpreter;
+use intcode::Interpreter;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
@@ -16,18 +16,24 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(str::parse)
         .collect::<Result<_, _>>()?;
 
-    let interpreter: IntcodeInterpreter = code.into();
+    let mut interpreter: Interpreter = code.into();
 
     match config.part {
         Part::One => {
-            let halted = interpreter.run_with_input(&[1]).unwrap();
+            interpreter.run_with_input(&[1]);
 
-            println!("diagnostics output is: {:?}", halted.get_output());
+            println!(
+                "diagnostics output is: {:?}",
+                interpreter.get_output().unwrap()
+            );
         }
         Part::Two => {
-            let halted = interpreter.run_with_input(&[2]).unwrap();
+            interpreter.run_with_input(&[2]);
 
-            println!("diagnostics output is: {:?}", halted.get_output());
+            println!(
+                "diagnostics output is: {:?}",
+                interpreter.get_output().unwrap()
+            );
         }
     }
 

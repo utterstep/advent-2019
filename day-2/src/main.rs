@@ -4,7 +4,7 @@ use advent_utils::{get_custom_config, Part};
 use itertools::iproduct;
 use serde::Deserialize;
 
-use intcode::IntcodeInterpreter;
+use intcode::Interpreter;
 
 #[derive(Debug, Deserialize)]
 struct Config {
@@ -30,10 +30,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             code[1] = 12;
             code[2] = 2;
 
-            let interpreter: IntcodeInterpreter = code.into();
-            let halted = interpreter.run().unwrap();
+            let mut interpreter: Interpreter = code.into();
+            interpreter.run();
 
-            println!("position 0 value is: {}", halted.get_code()[0]);
+            println!(
+                "position 0 value is: {}",
+                interpreter.get_code().unwrap()[0]
+            );
         }
         Part::Two => {
             let target = config.target.expect("unspecified target for part two");
@@ -43,9 +46,11 @@ fn main() -> Result<(), Box<dyn Error>> {
                 code[1] = noun;
                 code[2] = verb;
 
-                let interpreter: IntcodeInterpreter = code.into();
-                match interpreter.run() {
-                    Ok(halted) => match halted.get_code()[0] {
+                let mut interpreter: Interpreter = code.into();
+                interpreter.run();
+
+                match interpreter.get_code() {
+                    Ok(code) => match code[0] {
                         n if n == target => Some(noun * 100 + verb),
                         _ => None,
                     },

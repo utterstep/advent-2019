@@ -16,16 +16,23 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(str::parse)
         .collect::<Result<_, _>>()?;
 
-    let possible_settings = [0, 1, 2, 3, 4];
-
     match config.part {
         Part::One => {
+            const SIMPLE_SETTINGS: [i64; 5] = [0, 1, 2, 3, 4];
+
             println!(
                 "max thruster power is: {}",
-                amplifier::find_max_power(code, possible_settings).unwrap(),
+                amplifier::find_max_power(code, SIMPLE_SETTINGS).unwrap(),
             );
-        },
-        Part::Two => todo!(),
+        }
+        Part::Two => {
+            const LOOP_SETTINGS: [i64; 5] = [5, 6, 7, 8, 9];
+
+            println!(
+                "max thruster power is: {}",
+                amplifier::find_max_loop_power(code, LOOP_SETTINGS).unwrap(),
+            );
+        }
     };
 
     Ok(())
