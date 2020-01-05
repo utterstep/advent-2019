@@ -138,6 +138,6 @@ mod tests {
             .collect();
         let image = SpaceImage::from_slice(2, 2, pixels.as_slice());
 
-        assert_eq!(format!("{}", image.compose()), "*.\n.*");
+        assert_eq!(format!("{}", image.compose()), " *\n* ");
     }
 }
