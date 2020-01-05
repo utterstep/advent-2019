@@ -1,4 +1,7 @@
 # advent-2019
+
+![GitHub Actions Badge](https://github.com/utter-step/advent-2019/workflows/CI/badge.svg)
+
 Rusty Advent of Code 2019 solutions
 
 ## Growth points
