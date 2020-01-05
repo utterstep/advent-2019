@@ -10,3 +10,4 @@ edition = "2018"
 advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 
 itertools = "0.8"
+bytecount = "0.6"

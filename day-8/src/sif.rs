@@ -67,21 +67,13 @@ impl SpaceImage {
     }
 
     pub fn checksum(&self) -> Option<usize> {
-        let (ones, twos) = self
+        let pixels = &self
             .layers
             .iter()
-            .min_by_key(|l| l.pixels.iter().filter(|&&p| p == 0).count())?
-            .pixels
-            .iter()
-            .fold((0, 0), |(ones, twos), &p| {
-                if p == 1 {
-                    (ones + 1, twos)
-                } else if p == 2 {
-                    (ones, twos + 1)
-                } else {
-                    (ones, twos)
-                }
-            });
+            .min_by_key(|l| bytecount::count(&l.pixels, 0))?
+            .pixels;
+        let ones = bytecount::count(pixels, 1);
+        let twos = bytecount::count(pixels, 1);
 
         Some(ones * twos)
     }
