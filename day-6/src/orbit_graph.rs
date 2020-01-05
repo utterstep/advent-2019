@@ -1,4 +1,6 @@
-use std::{collections::HashMap, iter::FromIterator, ptr, str::FromStr};
+use std::{convert::TryFrom, iter::FromIterator, ptr};
+
+use fnv::FnvHashMap;
 
 const INITIAL_PLANET: &str = "COM";
 
@@ -10,24 +12,33 @@ struct Planet {
 }
 
 #[derive(Debug)]
-pub struct Planets {
+pub struct Planets<'a> {
     planets: Vec<Planet>,
-    map: HashMap<String, usize>,
+    // use slightly faster (and less secure, but here it doesn't matter) FNV hash
+    names_map: FnvHashMap<&'a str, usize>,
 }
 
-impl Planets {
+impl<'a> Planets<'a> {
     pub fn orbit_count_checksums(&self) -> usize {
         self.planets.iter().map(|p| p.order).sum()
     }
 
     pub fn steps_to_lca(&self, planet_a: &str, planet_b: &str) -> Option<usize> {
-        let idx_a = self.map.get(planet_a)?;
-        let idx_b = self.map.get(planet_b)?;
+        let idx_a = self.names_map.get(planet_a)?;
+        let idx_b = self.names_map.get(planet_b)?;
 
         let mut steps = 0;
 
         let mut cur_a = &self.planets[*idx_a];
         let mut cur_b = &self.planets[*idx_b];
+
+        // advance up, as we need to get from orbit to orbit, not from planet to planet
+        if let Some(parent) = cur_a.parent {
+            cur_a = &self.planets[parent];
+        }
+        if let Some(parent) = cur_b.parent {
+            cur_b = &self.planets[parent];
+        }
 
         while cur_a.order > cur_b.order {
             cur_a = &self.planets[cur_a.parent?];
@@ -46,16 +57,14 @@ impl Planets {
             steps += 2;
         }
 
-        // -2 due to lack of need to travel
-        // down from planet YOU and up to planet SAN
-        Some(if steps >= 2 { steps - 2 } else { 0 })
+        Some(steps)
     }
 }
 
 #[derive(Debug)]
-pub struct Orbit {
-    base: String,
-    planet: String,
+pub struct Orbit<'a> {
+    base: &'a str,
+    planet: &'a str,
 }
 
 #[derive(Debug)]
@@ -63,37 +72,33 @@ pub enum OrbitParseError {
     WrongFormat,
 }
 
-impl FromStr for Orbit {
-    type Err = OrbitParseError;
+impl<'a> TryFrom<&'a str> for Orbit<'a> {
+    type Error = OrbitParseError;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
+    fn try_from(s: &'a str) -> Result<Self, Self::Error> {
         let mut splitted = s.split(')');
 
-        let base = splitted
-            .next()
-            .ok_or(OrbitParseError::WrongFormat)?
-            .to_owned();
-        let planet = splitted
-            .next()
-            .ok_or(OrbitParseError::WrongFormat)?
-            .to_owned();
+        let base = splitted.next().ok_or(OrbitParseError::WrongFormat)?;
+        let planet = splitted.next().ok_or(OrbitParseError::WrongFormat)?;
 
         Ok(Self { base, planet })
     }
 }
 
-impl<'a> FromIterator<Orbit> for Planets {
-    fn from_iter<I: IntoIterator<Item = Orbit>>(iter: I) -> Self {
-        let mut planet_orbits = iter.into_iter().fold(HashMap::new(), |mut map, orbit| {
-            let system = map.entry(orbit.base).or_insert_with(Vec::new);
-            system.push(orbit.planet);
+impl<'a> FromIterator<Orbit<'a>> for Planets<'a> {
+    fn from_iter<I: IntoIterator<Item = Orbit<'a>>>(iter: I) -> Self {
+        let mut planet_orbits = iter
+            .into_iter()
+            .fold(FnvHashMap::default(), |mut map, orbit| {
+                let system = map.entry(orbit.base).or_insert_with(Vec::new);
+                system.push(orbit.planet);
 
-            map
-        });
+                map
+            });
 
-        let mut to_process = vec![(None, INITIAL_PLANET.to_owned(), 0)];
+        let mut to_process = vec![(None, INITIAL_PLANET, 0)];
         let mut planets = Vec::new();
-        let mut map = HashMap::new();
+        let mut names_map = FnvHashMap::default();
 
         while let Some((parent, name, order)) = to_process.pop() {
             planets.push(Planet {
@@ -117,10 +122,10 @@ impl<'a> FromIterator<Orbit> for Planets {
                 );
             }
 
-            map.insert(name, self_idx);
+            names_map.insert(name, self_idx);
         }
 
-        Self { planets, map }
+        Self { planets, names_map }
     }
 }
 
@@ -146,7 +151,7 @@ mod tests {
             K)L"
         )
         .split('\n')
-        .map(|s| s.parse::<Orbit>().unwrap());
+        .map(|s| Orbit::try_from(s).unwrap());
 
         let planets: Planets = orbits.collect();
         assert_eq!(planets.orbit_count_checksums(), 42);
@@ -171,7 +176,7 @@ mod tests {
             I)SAN"
         )
         .split('\n')
-        .map(|s| s.parse::<Orbit>().unwrap());
+        .map(|s| Orbit::try_from(s).unwrap());
 
         let planets: Planets = orbits.collect();
         assert_eq!(planets.steps_to_lca("YOU", "SAN"), Some(4));
