@@ -1,14 +1,12 @@
-use std::{error::Error, fs::File, io::Read};
+use std::error::Error;
 
-use advent_utils::{get_config, Part};
+use advent_utils::{get_config, read_file, Part};
 
 mod amplifier;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
-
-    let mut code_str = String::new();
-    File::open(config.input_file)?.read_to_string(&mut code_str)?;
+    let code_str = read_file(config.input_file)?;
 
     let code: Vec<_> = code_str
         .trim()
