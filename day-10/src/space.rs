@@ -48,6 +48,7 @@ impl Space {
                 RationalAngle::new(x, y).map(|r| (asteroid, r, distance_sq))
             })
             .collect::<Vec<_>>();
+        // safe to unwrap here ­— RationalAngle struct performs checks against corner cases
         to_destroy.sort_by(|a, b| (a.1.angle(), a.2).partial_cmp(&(b.1.angle(), b.2)).unwrap());
 
         let mut prev = None;
