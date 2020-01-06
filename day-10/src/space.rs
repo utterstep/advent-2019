@@ -256,6 +256,17 @@ mod tests {
         let asteroids_in_vaporize_order: Vec<_> =
             space.asteroids_in_vaporize_order(station).collect();
 
+        macro_rules! assert_vaporized {
+            ($number: expr, $coords: expr) => {
+                assert_eq!(
+                    asteroids_in_vaporize_order
+                        .get($number - 1)
+                        .map(|a| (a.x, a.y)),
+                    Some($coords)
+                );
+            };
+        }
+
         // The 1st asteroid to be vaporized is at 11,12.
         // The 2nd asteroid to be vaporized is at 12,1.
         // The 3rd asteroid to be vaporized is at 12,2.
@@ -267,17 +278,6 @@ mod tests {
         // The 200th asteroid to be vaporized is at 8,2.
         // The 201st asteroid to be vaporized is at 10,9.
         // The 299th and final asteroid to be vaporized is at 11,1.
-
-        macro_rules! assert_vaporized {
-            ($number: expr, $coords: expr) => {
-                assert_eq!(
-                    asteroids_in_vaporize_order
-                        .get($number - 1)
-                        .map(|a| (a.x, a.y)),
-                    Some($coords)
-                );
-            };
-        }
 
         assert_vaporized!(1, (11, 12));
         assert_vaporized!(2, (12, 1));
