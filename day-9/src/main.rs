@@ -1,22 +1,13 @@
-use std::{error::Error, fs::File, io::Read};
+use std::error::Error;
 
-use advent_utils::{get_config, Part};
+use advent_utils::{get_config, read_file, Part};
 
 use intcode::Interpreter;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;
 
-    let mut code_str = String::new();
-    File::open(config.input_file)?.read_to_string(&mut code_str)?;
-
-    let code: Vec<_> = code_str
-        .trim()
-        .split(',')
-        .map(str::parse)
-        .collect::<Result<_, _>>()?;
-
-    let mut interpreter: Interpreter = code.into();
+    let mut interpreter: Interpreter = read_file(config.input_file)?.parse()?;
 
     match config.part {
         Part::One => {

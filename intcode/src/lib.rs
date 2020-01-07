@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 mod opcode;
 mod vm;
 
@@ -12,10 +14,26 @@ pub enum InterpreterState {
     Failed(IntcodeVmError),
 }
 
+#[derive(Debug)]
 pub struct Interpreter {
     state: InterpreterState,
     vm: IntcodeVM,
     output: Vec<i64>,
+}
+
+macro_rules! interpreter_try {
+    ($self_: expr, $action: block) => {
+        match $self_.state {
+            InterpreterState::Failed(e) => Err(e),
+            _ => $action,
+        }
+    };
+    ($self_: expr, $rvalue: expr) => {
+        match $self_.state {
+            InterpreterState::Failed(e) => Err(e),
+            _ => Ok($rvalue),
+        }
+    };
 }
 
 impl Interpreter {
@@ -56,24 +74,21 @@ impl Interpreter {
     }
 
     pub fn get_code(&self) -> Result<&[i64], IntcodeVmError> {
-        match self.state {
-            InterpreterState::Failed(e) => Err(e),
-            _ => Ok(self.vm.get_code()),
-        }
+        interpreter_try!(self, self.vm.get_code())
     }
 
     pub fn get_output(&self) -> Result<&[i64], IntcodeVmError> {
-        match self.state {
-            InterpreterState::Failed(e) => Err(e),
-            _ => Ok(&self.output),
-        }
+        interpreter_try!(self, &self.output)
+    }
+
+    pub fn drain_output<'a>(
+        &'a mut self,
+    ) -> Result<impl Iterator<Item = i64> + 'a, IntcodeVmError> {
+        interpreter_try!(self, self.output.drain(..))
     }
 
     pub fn into_output(self) -> Result<Vec<i64>, IntcodeVmError> {
-        match self.state {
-            InterpreterState::Failed(e) => Err(e),
-            _ => Ok(self.output),
-        }
+        interpreter_try!(self, self.output)
     }
 }
 
@@ -84,6 +99,20 @@ impl From<Vec<i64>> for Interpreter {
             output: Vec::new(),
             vm: code.into(),
         }
+    }
+}
+
+impl FromStr for Interpreter {
+    type Err = std::num::ParseIntError;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let code: Vec<_> = s
+            .trim()
+            .split(',')
+            .map(str::parse)
+            .collect::<Result<_, _>>()?;
+
+        Ok(code.into())
     }
 }
 

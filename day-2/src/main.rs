@@ -1,6 +1,6 @@
-use std::{error::Error, fs::File, io::Read};
+use std::error::Error;
 
-use advent_utils::{get_custom_config, Part};
+use advent_utils::{get_custom_config, read_file, Part};
 use itertools::iproduct;
 use serde::Deserialize;
 
@@ -16,10 +16,7 @@ struct Config {
 fn main() -> Result<(), Box<dyn Error>> {
     let config: Config = get_custom_config()?;
 
-    let mut code_str = String::new();
-    File::open(config.input_file)?.read_to_string(&mut code_str)?;
-
-    let mut code: Vec<_> = code_str
+    let mut code: Vec<_> = read_file(config.input_file)?
         .trim()
         .split(',')
         .map(str::parse)
