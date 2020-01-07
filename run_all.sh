@@ -33,3 +33,5 @@ APP_PART=two APP_INPUT_FILE=day-10/input.txt ./target/release/day-10
 # day-11
 APP_PART=one APP_INPUT_FILE=day-11/input.txt ./target/release/day-11
 APP_PART=two APP_INPUT_FILE=day-11/input.txt ./target/release/day-11
+# day-13
+APP_PART=one APP_INPUT_FILE=day-13/input.txt ./target/release/day-13

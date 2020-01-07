@@ -40,6 +40,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "day-13"
+version = "0.1.0"
+dependencies = [
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "intcode 0.1.0",
+]
+
+[[package]]
 name = "day-2"
 version = "0.1.0"
 dependencies = [
