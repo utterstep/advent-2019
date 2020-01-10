@@ -87,18 +87,19 @@ impl<'a> TryFrom<&'a str> for Orbit<'a> {
 
 impl<'a> FromIterator<Orbit<'a>> for Planets<'a> {
     fn from_iter<I: IntoIterator<Item = Orbit<'a>>>(iter: I) -> Self {
-        let mut planet_orbits = iter
-            .into_iter()
-            .fold(FnvHashMap::default(), |mut map, orbit| {
+        let mut planet_orbits = iter.into_iter().fold(
+            FnvHashMap::with_capacity_and_hasher(1600, Default::default()),
+            |mut map, orbit| {
                 let system = map.entry(orbit.base).or_insert_with(Vec::new);
                 system.push(orbit.planet);
 
                 map
-            });
+            },
+        );
 
         let mut to_process = vec![(None, INITIAL_PLANET, 0)];
         let mut planets = Vec::new();
-        let mut names_map = FnvHashMap::default();
+        let mut names_map = FnvHashMap::with_capacity_and_hasher(1600, Default::default());
 
         while let Some((parent, name, order)) = to_process.pop() {
             planets.push(Planet {
