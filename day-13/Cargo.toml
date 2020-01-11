@@ -9,3 +9,7 @@ edition = "2018"
 [dependencies]
 advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 intcode = { path = "../intcode" }
+
+itertools = "0.8"
+serde = { version = "1", features = ["derive"] }
+termion = "1.5"

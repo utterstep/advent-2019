@@ -27,8 +27,7 @@ impl Display for Layer {
 
                     format!("{1}{0}", pixel, if x == 0 && y > 0 { "\n" } else { "" })
                 })
-                .collect::<Vec<_>>()
-                .join("")
+                .collect::<String>()
         )
     }
 }
