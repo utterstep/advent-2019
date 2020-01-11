@@ -56,9 +56,9 @@ impl From<TileParseError> for EmulatorError {
 
 impl Emulator {
     pub fn new(interpreter: Interpreter, mode: EmulatorMode) -> Self {
-        let tiles = iproduct!(MIN_Y..=MAX_Y, MIN_X..=MAX_X).map(|(x, y)| {
-            Tile::try_from(&[x as i64, y as i64, 0][..]).unwrap()
-        }).collect();
+        let tiles = iproduct!(MIN_Y..=MAX_Y, MIN_X..=MAX_X)
+            .map(|(x, y)| Tile::try_from(&[x as i64, y as i64, 0][..]).unwrap())
+            .collect();
 
         Self {
             interpreter,
@@ -143,22 +143,20 @@ impl Emulator {
     }
 
     fn display(&self) {
-        let field = iproduct!(MIN_Y..=MAX_Y, MIN_X..=MAX_X)
-            .map(|(y, x)| {
-                let chr = self.tiles[y * X_SPAN + x].to_char();
+        let field = self
+            .tiles
+            .iter()
+            .enumerate()
+            .map(|(i, tile)| {
+                let chr = tile.to_char();
+                let (x, y) = (i % X_SPAN, i / X_SPAN);
 
                 format!("{1}{0}", chr, if x == 0 && y > 0 { "\n" } else { "" })
             })
             .collect::<String>();
 
         let mut writer = io::stdout();
-        writeln!(
-            writer,
-            "{}{}",
-            termion::clear::All,
-            field,
-        )
-        .unwrap();
+        writeln!(writer, "{}\n{}", termion::clear::All, field).unwrap();
 
         if let Some(score) = self.score {
             writeln!(writer, "Current score: {}", score).unwrap();
@@ -173,9 +171,9 @@ impl Emulator {
         let input = stdin.keys().next()?.ok()?;
 
         match input {
-            Key::Char('a') => Some(1),
+            Key::Char('a') => Some(-1),
             Key::Char('s') => Some(0),
-            Key::Char('d') => Some(-1),
+            Key::Char('d') => Some(1),
             _ => None,
         }
     }
