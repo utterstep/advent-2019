@@ -6,7 +6,7 @@ Rusty Advent of Code 2019 solutions
 
 ## Current running time
 
-```bash
+```console
 utterstep@utterstep-nix:~/my/advent-2019$ head /proc/cpuinfo
 processor	: 0
 vendor_id	: GenuineIntel
