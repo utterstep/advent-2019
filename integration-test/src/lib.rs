@@ -4,12 +4,19 @@ mod tests {
 
     #[test]
     fn test_expected_output() {
+        Command::new("cargo")
+            .current_dir("../")
+            .arg("build")
+            .arg("--release")
+            .status()
+            .expect("failed to build");
+
         // assert that all existing solutions are valid after any change
         let output = Command::new("bash")
             .current_dir("../")
             .arg("./run_all.sh")
             .output()
-            .unwrap();
+            .expect("failed to run all solutions");
 
         assert_eq!(output.stdout, include_bytes!("../reference.txt").to_vec(),);
     }
