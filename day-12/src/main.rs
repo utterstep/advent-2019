@@ -6,7 +6,7 @@ mod orbital_system;
 
 use orbital_system::System;
 
-const N_STEPS: usize = 100_000_000;
+const N_STEPS: usize = 1000;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let config = get_config()?;

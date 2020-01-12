@@ -1,4 +1,4 @@
-use std::convert::TryInto;
+use std::{borrow::Borrow, convert::TryInto};
 
 use crate::opcode::{Opcode, Operation, ParameterMode};
 
@@ -49,9 +49,9 @@ impl IntcodeVM {
         &self.code
     }
 
-    pub(crate) fn run_with_io<'a>(
+    pub(crate) fn run_with_io(
         &mut self,
-        input: impl IntoIterator<Item = &'a i64>,
+        input: impl IntoIterator<Item = impl Borrow<i64>>,
         output: &mut Vec<i64>,
     ) -> Result<IntcodeVmStopCause, IntcodeVmError> {
         let mut input = input.into_iter();
@@ -97,7 +97,7 @@ impl IntcodeVM {
                 Operation::Input => {
                     process_params!([target] => {
                         match input.next() {
-                            Some(&value) => self.write(target, value)?,
+                            Some(value) => self.write(target, *value.borrow())?,
                             None => return Ok(IntcodeVmStopCause::WaitingForInput),
                         }
                     });

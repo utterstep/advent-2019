@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{borrow::Borrow, str::FromStr};
 
 mod opcode;
 mod vm;
@@ -38,10 +38,10 @@ macro_rules! interpreter_try {
 
 impl Interpreter {
     pub fn run(&mut self) {
-        self.run_with_input(std::iter::empty())
+        self.run_with_input(std::iter::empty::<i64>())
     }
 
-    pub fn run_with_input<'a>(&mut self, input: impl IntoIterator<Item = &'a i64>) {
+    pub fn run_with_input(&mut self, input: impl IntoIterator<Item = impl Borrow<i64>>) {
         match self.state {
             InterpreterState::Halted | InterpreterState::Failed(_) => {}
             InterpreterState::Initial | InterpreterState::WaitingForInput => {
