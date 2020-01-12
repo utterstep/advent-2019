@@ -1,6 +1,6 @@
 # advent-2019
 
-![GitHub Actions Badge](https://github.com/utter-step/advent-2019/workflows/CI/badge.svg)
+[![GitHub Actions Badge](https://github.com/utter-step/advent-2019/workflows/CI/badge.svg)](https://github.com/utter-step/advent-2019/actions?query=workflow%3ACI)
 
 Rusty Advent of Code 2019 solutions
 
