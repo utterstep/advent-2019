@@ -17,6 +17,8 @@ members = [
     "day-12",
     "day-13",
     "day-19",
+
+    "integration-test",
 ]
 
 [profile.release]

@@ -72,7 +72,7 @@ impl SpaceImage {
             .min_by_key(|l| bytecount::count(&l.pixels, 0))?
             .pixels;
         let ones = bytecount::count(pixels, 1);
-        let twos = bytecount::count(pixels, 1);
+        let twos = bytecount::count(pixels, 2);
 
         Some(ones * twos)
     }

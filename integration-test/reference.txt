@@ -1,0 +1,39 @@
+total fuel requirements: 3126794
+total recursive fuel requirements: 4687331
+position 0 value is: 6087827
+noun and verb for target 19690720 are: 5379
+distance from closest intersection to 0: 1017
+steps to closest intersection: 11432
+number of possible passwords: 1955
+number of possible passwords: 1319
+diagnostics output is: [0, 0, 0, 0, 0, 0, 0, 0, 0, 13087969]
+diagnostics output is: [14110739]
+checksum is: 271151
+hops to Santa: 388
+max thruster power is: 79723
+max thruster power is: 70602018
+image checksum is: 1950
+composed image looks like:
+**** *  *  **  *  * *    
+*    * *  *  * *  * *    
+***  **   *  * **** *    
+*    * *  **** *  * *    
+*    * *  *  * *  * *    
+*    *  * *  * *  * **** 
+diagnostics output is: [2204990589]
+diagnostics output is: [50008]
+station best location is on Asteroid { x: 11, y: 13 }, will see 227 asteroids at once
+asteroid to be destroyed 200th: Some(Asteroid { x: 6, y: 4 })
+1967 panels will be painted
+robot painted following:
+ *  * ***  *  * ****  **  **** ***  *  *   
+ * *  *  * *  * *    *  *    * *  * * *    
+ **   ***  *  * ***  *      *  ***  **     
+ * *  *  * *  * *    * **  *   *  * * *    
+ * *  *  * *  * *    *  * *    *  * * *    
+ *  * ***   **  ****  *** **** ***  *  *   
+Total energy after 1000 runs: 8310
+blocks on screen: 324
+Final score: 15957
+points are affected by tractor ray: 209
+square base is at: 10450905
