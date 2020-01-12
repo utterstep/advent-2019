@@ -35,5 +35,6 @@ robot painted following:
 Total energy after 1000 runs: 8310
 blocks on screen: 324
 Final score: 15957
+sum of the alignment parameters is: 4372
 points are affected by tractor ray: 209
 square base is at: 10450905

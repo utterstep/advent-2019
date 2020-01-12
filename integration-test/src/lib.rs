@@ -18,6 +18,9 @@ mod tests {
             .output()
             .expect("failed to run all solutions");
 
-        assert_eq!(output.stdout, include_bytes!("../reference.txt").to_vec(),);
+        assert_eq!(
+            String::from_utf8(output.stdout).unwrap(),
+            include_str!("../reference.txt"),
+        );
     }
 }
