@@ -30,4 +30,4 @@ Benchmark #1: ./run_all.sh
 * [day-3](./day-2): check, why precomputed sums looks slower, than brute force approach
 * [day-7](./day-7): get rid of [permutohedron](https://crates.io/crates/permutohedron) crate
 * [day-13](./day-13): more effective bot strategy (current time ~9ms because there are lot of redundant moves in the end)
-* [day-19](./day-19): determine error sign — currently I'm not totaly sure that constants are good for every possible input (though they are quite coservative)
+* [day-19](./day-19): determine error sign — currently I'm not totaly sure that constants are good for every possible input (though they are quite conservative)
