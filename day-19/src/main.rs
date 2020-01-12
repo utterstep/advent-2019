@@ -21,6 +21,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     match config.part {
         Part::One => {
             let affected_points = iproduct!(0..VIEW_DISTANCE, 0..VIEW_DISTANCE)
+                // iproduct actually produces order (y, x),
+                // but is doesn't matter in case area is symmetric (like this one, 50x50)
                 .map(|point| solve::check_point(&code, point))
                 .filter(|&output| output)
                 .count();
