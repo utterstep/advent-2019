@@ -40,6 +40,7 @@ APP_PART=one APP_INPUT_FILE=day-13/input.txt ./target/release/day-13
 APP_PART=two APP_INPUT_FILE=day-13/input.txt APP_MODE=auto ./target/release/day-13
 # day-17
 APP_PART=one APP_INPUT_FILE=day-17/input.txt ./target/release/day-17
+APP_PART=two APP_INPUT_FILE=day-17/input.txt ./target/release/day-17
 # day-19
 APP_PART=one APP_INPUT_FILE=day-19/input.txt ./target/release/day-19
 APP_PART=two APP_INPUT_FILE=day-19/input.txt ./target/release/day-19

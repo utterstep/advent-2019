@@ -1,43 +1,17 @@
-use std::{convert::TryFrom, ops::Index, str::FromStr};
+use std::{
+    convert::TryFrom,
+    fmt::{self, Display},
+    ops::Index,
+    str::FromStr,
+};
 
 use itertools::iproduct;
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum Orientation {
-    Up,
-    Right,
-    Down,
-    Left,
-}
+mod object;
+mod traversal;
 
-#[derive(Debug, PartialEq, Eq)]
-pub enum ObjectParseError {
-    UnknownSymbol(u8),
-}
-
-#[derive(Debug, PartialEq, Eq)]
-pub enum Object {
-    Empty,
-    Scaffold,
-    Robot(Orientation),
-}
-
-impl TryFrom<u8> for Object {
-    type Error = ObjectParseError;
-
-    fn try_from(value: u8) -> Result<Self, Self::Error> {
-        match value {
-            b'.' => Ok(Self::Empty),
-            b'#' => Ok(Self::Scaffold),
-            // ^, v, <, or >
-            b'^' => Ok(Self::Robot(Orientation::Up)),
-            b'>' => Ok(Self::Robot(Orientation::Right)),
-            b'v' => Ok(Self::Robot(Orientation::Down)),
-            b'<' => Ok(Self::Robot(Orientation::Left)),
-            other => Err(ObjectParseError::UnknownSymbol(other)),
-        }
-    }
-}
+use object::{Object, ObjectParseError, Orientation};
+pub use traversal::Command;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum SpaceParseError {
@@ -120,6 +94,23 @@ impl FromStr for Space {
             height,
             width: width.unwrap_or(0),
         })
+    }
+}
+
+impl Display for Space {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let field = self
+            .map
+            .iter()
+            .enumerate()
+            .map(|(i, object)| {
+                let (x, y) = (i % self.width, i / self.width);
+
+                format!("{1}{0}", object, if x == 0 && y > 0 { "\n" } else { "" })
+            })
+            .collect::<String>();
+
+        writeln!(f, "{}", field)
     }
 }
 

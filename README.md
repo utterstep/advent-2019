@@ -21,8 +21,8 @@ physical id	: 0
 
 utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 "bash ./run_all.sh"
 Benchmark #1: bash ./run_all.sh
-  Time (mean ± σ):      64.3 ms ±   1.4 ms    [User: 59.7 ms, System: 6.1 ms]
-  Range (min … max):    61.6 ms …  68.4 ms    45 runs
+  Time (mean ± σ):      66.4 ms ±   0.6 ms    [User: 61.3 ms, System: 6.7 ms]
+  Range (min … max):    65.3 ms …  67.6 ms    45 runs
 ```
 
 ## Growth points
