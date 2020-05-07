@@ -19,10 +19,10 @@ cpu MHz		: 4018.411
 cache size	: 9216 KB
 physical id	: 0
 
-utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 "bash ./run_all.sh"
-Benchmark #1: bash ./run_all.sh
-  Time (mean ± σ):      66.4 ms ±   0.6 ms    [User: 61.3 ms, System: 6.7 ms]
-  Range (min … max):    65.3 ms …  67.6 ms    45 runs
+utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 "./run_all.sh" 
+Benchmark #1: ./run_all.sh
+  Time (mean ± σ):      64.6 ms ±   0.7 ms    [User: 59.3 ms, System: 7.0 ms]
+  Range (min … max):    63.3 ms …  65.9 ms    46 runs
 ```
 
 ## Growth points

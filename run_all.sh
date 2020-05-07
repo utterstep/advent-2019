@@ -44,3 +44,5 @@ APP_PART=two APP_INPUT_FILE=day-17/input.txt ./target/release/day-17
 # day-19
 APP_PART=one APP_INPUT_FILE=day-19/input.txt ./target/release/day-19
 APP_PART=two APP_INPUT_FILE=day-19/input.txt ./target/release/day-19
+# day-22
+APP_PART=one APP_INPUT_FILE=day-22/input.txt APP_MODE=card ./target/release/day-22
