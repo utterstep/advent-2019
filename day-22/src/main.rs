@@ -12,12 +12,12 @@ use movement::Movement;
 use traits::Simulator;
 
 const DECK_SIZE_PT1: usize = 10007;
-const DECK_SIZE_PT2: usize = 119315717514047;
+const DECK_SIZE_PT2: usize = 119_315_717_514_047;
 const CARD_TO_FIND_PT1: i64 = 2019;
 const CARD_TO_FIND_PT2: i64 = 2020;
 
 const ITERS_PT1: usize = 1;
-const ITERS_PT2: usize = 101741582076661;
+const ITERS_PT2: usize = 101_741_582_076_661;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]

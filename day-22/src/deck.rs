@@ -21,8 +21,8 @@ impl Deck {
 
 impl Simulator for Deck {
     fn execute(&mut self, movement: &Movement) {
-        match movement {
-            &Movement::DealIn => {
+        match *movement {
+            Movement::DealIn => {
                 let mut i = 0;
                 let ln = self.cards.len();
 
@@ -32,18 +32,17 @@ impl Simulator for Deck {
                     i += 1;
                 }
             }
-            &Movement::Cut(n) if n > 0 => {
+            Movement::Cut(n) if n > 0 => {
                 self.cards.rotate_left(n as usize);
             }
-            &Movement::Cut(n) if n < 0 => {
+            Movement::Cut(n) if n < 0 => {
                 self.cards.rotate_right(-n as usize);
             }
-            &Movement::Cut(n) if n == 0 => {}
-            &Movement::Cut(_) => unreachable!(),
-            &Movement::DealWithIncrement(increment) => {
+            Movement::Cut(n) if n == 0 => {}
+            Movement::Cut(_) => unreachable!(),
+            Movement::DealWithIncrement(increment) => {
                 let len = self.cards.len();
-                let mut cards = Vec::with_capacity(len);
-                cards.resize(len, 0);
+                let mut cards = vec![0; len];
 
                 let mut idx = 0;
                 for card in &self.cards {

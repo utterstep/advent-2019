@@ -17,10 +17,10 @@ impl Card {
 
 impl Simulator for Card {
     fn execute(&mut self, movement: &Movement) {
-        self.position = match movement {
-            &Movement::DealIn => self.deck_size - self.position - 1,
-            &Movement::DealWithIncrement(inc) => (self.position * inc) % self.deck_size,
-            &Movement::Cut(n) => (self.position - n).rem_euclid(self.deck_size),
+        self.position = match *movement {
+            Movement::DealIn => self.deck_size - self.position - 1,
+            Movement::DealWithIncrement(inc) => (self.position * inc) % self.deck_size,
+            Movement::Cut(n) => (self.position - n).rem_euclid(self.deck_size),
         };
     }
 
