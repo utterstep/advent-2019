@@ -17,13 +17,13 @@ pub enum IntcodeVmError {
     InsufficientInputData,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct IntcodeVM {
     code: Vec<i64>,
     current_position: usize,
     relative_base: i64,
     #[cfg(debug_assertions)]
-    pub(crate) processed_opcode_counter: i64,
+    pub(crate) processed_opcode_counter: usize,
 }
 
 #[derive(Debug)]

@@ -9,4 +9,4 @@ edition = "2018"
 [dependencies]
 advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 
-itertools = "0.8"
+itertools = "0.9"

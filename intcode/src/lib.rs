@@ -14,7 +14,7 @@ pub enum InterpreterState {
     Failed(IntcodeVmError),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Interpreter {
     state: InterpreterState,
     vm: IntcodeVM,
@@ -81,14 +81,17 @@ impl Interpreter {
         interpreter_try!(self, &self.output)
     }
 
-    pub fn drain_output<'a>(
-        &'a mut self,
-    ) -> Result<impl Iterator<Item = i64> + 'a, IntcodeVmError> {
+    pub fn drain_output(&mut self) -> Result<impl Iterator<Item = i64> + '_, IntcodeVmError> {
         interpreter_try!(self, self.output.drain(..))
     }
 
     pub fn into_output(self) -> Result<Vec<i64>, IntcodeVmError> {
         interpreter_try!(self, self.output)
+    }
+
+    #[cfg(debug_assertions)]
+    pub fn get_processed_opcodes(&self) -> usize {
+        self.vm.processed_opcode_counter
     }
 }
 
