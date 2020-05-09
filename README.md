@@ -8,21 +8,21 @@ Rusty Advent of Code 2019 solutions
 
 ```console
 utterstep@utterstep-nix:~/my/advent-2019$ head /proc/cpuinfo
-processor	: 0
-vendor_id	: GenuineIntel
-cpu family	: 6
-model		: 158
-model name	: Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
-stepping	: 10
-microcode	: 0xca
-cpu MHz		: 4018.411
-cache size	: 9216 KB
-physical id	: 0
+processor       : 0
+vendor_id       : GenuineIntel
+cpu family      : 6
+model           : 158
+model name      : Intel(R) Core(TM) i7-8750H CPU @ 2.20GHz
+stepping        : 10
+microcode       : 0xca
+cpu MHz         : 4018.411
+cache size      : 9216 KB
+physical id     : 0
 
 utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 "bash ./run_all.sh"
 Benchmark #1: bash ./run_all.sh
-  Time (mean ± σ):      66.6 ms ±   0.6 ms    [User: 61.4 ms, System: 6.9 ms]
-  Range (min … max):    65.6 ms …  68.1 ms    45 runs
+  Time (mean ± σ):      69.8 ms ±   0.6 ms    [User: 63.7 ms, System: 7.8 ms]
+  Range (min … max):    68.8 ms …  71.3 ms    42 runs
 ```
 
 ## Growth points

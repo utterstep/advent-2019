@@ -3,7 +3,7 @@ use std::iter::once;
 use intcode::{IntcodeVmError, Interpreter};
 use itertools::Itertools;
 
-use super::packet::Packet;
+use super::Packet;
 
 #[derive(Debug)]
 pub struct Computer {
@@ -35,6 +35,10 @@ impl Computer {
         self.vm
             .drain_output()
             .map(|iter| iter.tuples::<(_, _, _)>().map(Packet::from))
+    }
+
+    pub fn inbox_size(&self) -> usize {
+        self.inbox.len()
     }
 
     #[cfg(debug_assertions)]

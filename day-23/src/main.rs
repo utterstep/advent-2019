@@ -1,12 +1,13 @@
+use std::collections::BTreeSet;
+
 use advent_utils::{get_config, read_file, Part};
 use intcode::Interpreter;
 
 mod network;
 
-use network::Network;
+use network::{Network, NAT};
 
 const NETWORK_SIZE: usize = 50;
-const DST_TO_FIND: i64 = 255;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = get_config()?;
@@ -15,16 +16,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match config.part {
         Part::One => {
-            let packet = network
-                .find(|p| p.dst() == DST_TO_FIND)
-                .expect("packet not found");
+            let transmission = network
+                .find(|p| p.dst() == NAT)
+                .expect("suitable transmission not found");
 
             #[cfg(debug_assertions)]
             println!("processed {} opcodes", network.get_processed_opcodes());
 
-            println!("target packet: {:?}", packet);
+            println!("target: {:?}", transmission);
         }
-        Part::Two => todo!(),
+        Part::Two => {
+            let mut ys = BTreeSet::new();
+
+            let transmission = network
+                .find(|t| t.src() == NAT && !ys.insert(t.payload().y()))
+                .expect("suitable transmission not found");
+
+            #[cfg(debug_assertions)]
+            println!("processed {} opcodes", network.get_processed_opcodes());
+
+            println!("target: {:?}", transmission);
+        }
     }
 
     Ok(())

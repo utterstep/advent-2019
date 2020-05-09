@@ -2,20 +2,28 @@ use std::iter::IntoIterator;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Packet {
-    dst: i64,
+    dst: usize,
     x: i64,
     y: i64,
 }
 
 impl Packet {
-    pub fn dst(&self) -> i64 {
+    pub fn dst(&self) -> usize {
         self.dst
+    }
+
+    pub fn y(&self) -> i64 {
+        self.y
     }
 }
 
 impl From<(i64, i64, i64)> for Packet {
     fn from((dst, x, y): (i64, i64, i64)) -> Self {
-        Self { dst, x, y }
+        Self {
+            dst: dst as usize,
+            x,
+            y,
+        }
     }
 }
 
