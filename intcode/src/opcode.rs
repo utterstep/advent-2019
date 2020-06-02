@@ -27,7 +27,7 @@ pub(crate) struct Opcode {
 }
 
 impl From<i64> for Opcode {
-    fn from(mut value: i64) -> Self {
+    fn from(value: i64) -> Self {
         if value < 100 {
             let parameter_modes = [ParameterMode::Position; 3];
 
@@ -65,11 +65,9 @@ impl From<i64> for Opcode {
             _ => Operation::Unknown,
         };
 
-        value /= 100;
-
         // my eyes :( but this unrollment gives like +20% perf on day-9 (4ms vs 5ms on turbo-locked Core i7-8750H)
         #[allow(clippy::zero_prefixed_literal)]
-        let parameter_modes = match value {
+        let parameter_modes = match value / 100 {
             000 => [
                 ParameterMode::Position,
                 ParameterMode::Position,

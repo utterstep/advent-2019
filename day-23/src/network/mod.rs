@@ -53,7 +53,9 @@ impl Iterator for Network {
             if self.is_idle() {
                 if let Some(packet) = self.nat {
                     self.nat = None;
-                    self.computers[0].receive(packet);
+                    if let Some(computer) = self.computers.get_mut(0) {
+                        computer.receive(packet);
+                    }
 
                     return Some(Transmission::new(NAT, packet));
                 }
