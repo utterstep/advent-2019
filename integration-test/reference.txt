@@ -33,6 +33,7 @@ robot painted following:
  * *  *  * *  * *    *  * *    *  * * *    
  *  * ***   **  ****  *** **** ***  *  *   
 Total energy after 1000 runs: 8310
+System cycle length is: 319290382980408
 blocks on screen: 324
 Final score: 15957
 sum of the alignment parameters is: 4372

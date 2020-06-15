@@ -3,6 +3,7 @@ use std::error::Error;
 use advent_utils::{get_config, read_file, Part};
 
 mod orbital_system;
+mod utils;
 
 use orbital_system::System;
 
@@ -23,7 +24,9 @@ fn main() -> Result<(), Box<dyn Error>> {
 
             println!("Total energy after {} runs: {}", N_STEPS, system.energy());
         }
-        Part::Two => todo!(),
+        Part::Two => {
+            println!("System cycle length is: {}", system.cycle_length());
+        }
     }
 
     Ok(())

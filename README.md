@@ -25,6 +25,8 @@ Benchmark #1: bash ./run_all.sh
   Range (min … max):    68.8 ms …  71.3 ms    42 runs
 ```
 
+Currently `day-12` (2nd part) is taking ~50% of all running time (~68ms, down from ~400ms initially).
+
 ## Growth points
 
 * benchmark: currently I'm measuring not only solutions, but also bash startup. Rewrite benchmark to increase accuracy

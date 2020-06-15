@@ -1,8 +1,13 @@
-use std::{cmp::Ordering, str::FromStr};
+use std::str::FromStr;
+
+use fnv::FnvHashSet;
+
+use crate::utils::lcm;
 
 const DIMENSIONS: usize = 3;
+const N_MOONS: usize = 4;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 struct Moon {
     coords: [i32; DIMENSIONS],
     velocities: [i32; DIMENSIONS],
@@ -45,17 +50,19 @@ impl FromStr for Moon {
 
 #[derive(Debug)]
 pub struct System {
-    moons: Vec<Moon>,
+    moons: [Moon; N_MOONS],
 }
 
 impl FromStr for System {
     type Err = IncorrectMoonFormat;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let moons = s
+        let moons: Vec<_> = s
             .split('\n')
             .map(|line| line.parse::<Moon>())
             .collect::<Result<_, _>>()?;
+
+        let moons = [moons[0], moons[1], moons[2], moons[3]];
 
         Ok(Self { moons })
     }
@@ -66,53 +73,27 @@ impl System {
         for i in 0..self.moons.len() {
             let mut gravities = [0; DIMENSIONS];
             let (left, right) = self.moons.split_at_mut(i);
-            // safe to unwrap, split_at_mut leaves i-th element in the right part
-            let (moon, right) = right.split_first_mut().unwrap();
 
-            for other in left {
-                moon.coords
-                    .iter()
-                    .zip(other.coords.iter())
-                    .map(|(a, b)| a.cmp(b))
-                    .zip(gravities.iter_mut())
-                    .for_each(|(ord, gravity)| {
-                        *gravity += {
-                            match ord {
-                                Ordering::Less => 1,
-                                Ordering::Greater => -1,
-                                Ordering::Equal => 0,
-                            }
-                        }
+            if let Some((moon, right)) = right.split_first_mut() {
+                for other in left.iter().chain(right.iter()) {
+                    moon.coords
+                        .iter()
+                        .zip(&other.coords)
+                        .map(|(a, b)| a.cmp(b))
+                        .zip(&mut gravities)
+                        .for_each(|(ord, gravity)| *gravity += -(ord as i32));
+                }
+
+                moon.velocities
+                    .iter_mut()
+                    .zip(&gravities)
+                    .for_each(|(vel, gravity)| {
+                        *vel += gravity;
                     });
             }
-
-            // duplication leads to better performance than chain :(
-            for other in right {
-                moon.coords
-                    .iter()
-                    .zip(other.coords.iter())
-                    .map(|(a, b)| a.cmp(b))
-                    .zip(gravities.iter_mut())
-                    .for_each(|(ord, gravity)| {
-                        *gravity += {
-                            match ord {
-                                Ordering::Less => 1,
-                                Ordering::Greater => -1,
-                                Ordering::Equal => 0,
-                            }
-                        }
-                    });
-            }
-
-            moon.velocities
-                .iter_mut()
-                .zip(&gravities)
-                .for_each(|(vel, gravity)| {
-                    *vel += gravity;
-                });
         }
 
-        for moon in self.moons.iter_mut() {
+        for moon in &mut self.moons {
             moon.coords
                 .iter_mut()
                 .zip(&moon.velocities)
@@ -124,6 +105,48 @@ impl System {
 
     pub fn energy(&self) -> i32 {
         self.moons.iter().map(|m| m.energy()).sum()
+    }
+
+    fn moon_orbit_periods(mut self) -> Vec<usize> {
+        let mut periods: Vec<Option<usize>> = vec![None; DIMENSIONS];
+        let mut sensors: Vec<FnvHashSet<[(i32, i32); N_MOONS]>> = vec![Default::default(); DIMENSIONS];
+
+        loop {
+            // changed from `periods.all(...)` after benchmark, saves some cycles :)
+            let mut still_running = false;
+
+            for (dimension, (period, sensor)) in
+                periods.iter_mut().zip(&mut sensors).enumerate()
+            {
+                if period.is_none() {
+                    still_running = true;
+
+                    let data = [
+                        (self.moons[0].coords[dimension], self.moons[0].velocities[dimension]),
+                        (self.moons[1].coords[dimension], self.moons[1].velocities[dimension]),
+                        (self.moons[2].coords[dimension], self.moons[2].velocities[dimension]),
+                        (self.moons[3].coords[dimension], self.moons[3].velocities[dimension]),
+                    ];
+
+                    if !sensor.insert(data) {
+                        *period = Some(sensor.len());
+                    }
+                }
+            }
+
+            if !still_running {
+                // safe to unwrap — still_running == `periods.any(Option::is_none)`
+                return periods.into_iter().map(Option::unwrap).collect();
+            }
+
+            self.advance();
+        }
+    }
+
+    pub fn cycle_length(self) -> usize {
+        self.moon_orbit_periods()
+            .into_iter()
+            .fold(1, lcm)
     }
 }
 
@@ -219,5 +242,32 @@ mod tests {
         }
 
         assert_eq!(system.energy(), 1940);
+    }
+
+    #[test]
+    fn test_cycle() {
+        let system: System = indoc!(
+            "
+            <x=-1, y=0, z=2>
+            <x=2, y=-10, z=-7>
+            <x=4, y=-8, z=8>
+            <x=3, y=5, z=-1>"
+        )
+        .parse()
+        .unwrap();
+
+        assert_eq!(system.cycle_length(), 2772);
+
+        let system: System = indoc!(
+            "
+            <x=-8, y=-10, z=0>
+            <x=5, y=5, z=10>
+            <x=2, y=-7, z=3>
+            <x=9, y=-8, z=-3>"
+        )
+        .parse()
+        .unwrap();
+
+        assert_eq!(system.cycle_length(), 4686774924);
     }
 }
