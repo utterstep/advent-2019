@@ -109,23 +109,34 @@ impl System {
 
     fn moon_orbit_periods(mut self) -> Vec<usize> {
         let mut periods: Vec<Option<usize>> = vec![None; DIMENSIONS];
-        let mut sensors: Vec<FnvHashSet<[(i32, i32); N_MOONS]>> = vec![Default::default(); DIMENSIONS];
+        let mut sensors: Vec<FnvHashSet<[(i32, i32); N_MOONS]>> =
+            vec![Default::default(); DIMENSIONS];
 
         loop {
             // changed from `periods.all(...)` after benchmark, saves some cycles :)
             let mut still_running = false;
 
-            for (dimension, (period, sensor)) in
-                periods.iter_mut().zip(&mut sensors).enumerate()
-            {
+            for (dimension, (period, sensor)) in periods.iter_mut().zip(&mut sensors).enumerate() {
                 if period.is_none() {
                     still_running = true;
 
                     let data = [
-                        (self.moons[0].coords[dimension], self.moons[0].velocities[dimension]),
-                        (self.moons[1].coords[dimension], self.moons[1].velocities[dimension]),
-                        (self.moons[2].coords[dimension], self.moons[2].velocities[dimension]),
-                        (self.moons[3].coords[dimension], self.moons[3].velocities[dimension]),
+                        (
+                            self.moons[0].coords[dimension],
+                            self.moons[0].velocities[dimension],
+                        ),
+                        (
+                            self.moons[1].coords[dimension],
+                            self.moons[1].velocities[dimension],
+                        ),
+                        (
+                            self.moons[2].coords[dimension],
+                            self.moons[2].velocities[dimension],
+                        ),
+                        (
+                            self.moons[3].coords[dimension],
+                            self.moons[3].velocities[dimension],
+                        ),
                     ];
 
                     if !sensor.insert(data) {
@@ -144,9 +155,7 @@ impl System {
     }
 
     pub fn cycle_length(self) -> usize {
-        self.moon_orbit_periods()
-            .into_iter()
-            .fold(1, lcm)
+        self.moon_orbit_periods().into_iter().fold(1, lcm)
     }
 }
 
