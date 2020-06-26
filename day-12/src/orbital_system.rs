@@ -69,10 +69,7 @@ impl FromStr for System {
     type Err = IncorrectMoonFormat;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let moons: Vec<_> = s
-            .split('\n')
-            .map(str::parse)
-            .collect::<Result<_, _>>()?;
+        let moons: Vec<_> = s.split('\n').map(str::parse).collect::<Result<_, _>>()?;
 
         let moons = [moons[0], moons[1], moons[2], moons[3]];
 

@@ -57,9 +57,7 @@ impl FromIterator<Direction> for Wire {
         let segments_and_steps = iter.into_iter().fold(
             Vec::new(),
             |mut segments: Vec<(Segment, i32)>, direction| {
-                let start = segments
-                    .last()
-                    .map_or_else(|| (0, 0).into(), |s| s.0.end);
+                let start = segments.last().map_or_else(|| (0, 0).into(), |s| s.0.end);
                 let distance = direction.distance();
                 let end = start + direction;
 

@@ -33,10 +33,7 @@ impl std::str::FromStr for Direction {
 impl Direction {
     pub fn distance(&self) -> i32 {
         match self {
-            | Self::Up(d)
-            | Self::Down(d)
-            | Self::Left(d)
-            | Self::Right(d) => *d,
+            Self::Up(d) | Self::Down(d) | Self::Left(d) | Self::Right(d) => *d,
         }
     }
 }
