@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Movement {
     DealIn,
     DealWithIncrement(i64),

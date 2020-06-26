@@ -59,8 +59,7 @@ impl FromIterator<Direction> for Wire {
             |mut segments: Vec<(Segment, i32)>, direction| {
                 let start = segments
                     .last()
-                    .map(|s| s.0.end)
-                    .unwrap_or_else(|| (0, 0).into());
+                    .map_or_else(|| (0, 0).into(), |s| s.0.end);
                 let distance = direction.distance();
                 let end = start + direction;
 

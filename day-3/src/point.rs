@@ -1,9 +1,9 @@
 use crate::direction::Direction;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 pub struct X(i32);
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 pub struct Y(i32);
 
 macro_rules! bitxor_coord {
@@ -21,7 +21,7 @@ macro_rules! bitxor_coord {
 bitxor_coord!(X);
 bitxor_coord!(Y);
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub struct Point {
     pub x: X,
     pub y: Y,

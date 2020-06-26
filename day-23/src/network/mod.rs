@@ -12,7 +12,7 @@ use transmission::Transmission;
 
 pub const NAT: usize = 255;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Network {
     computers: Vec<Computer>,
     buffer: VecDeque<Transmission>,
@@ -20,7 +20,7 @@ pub struct Network {
 }
 
 impl Network {
-    pub fn new(vm: Interpreter, size: usize) -> Self {
+    pub fn new(vm: &Interpreter, size: usize) -> Self {
         let computers = (0..size)
             .map(|i| Computer::new(vm.clone(), i as i64))
             .collect();

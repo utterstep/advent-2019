@@ -6,7 +6,7 @@ mod vm;
 pub use vm::IntcodeVmError;
 use vm::{IntcodeVM, IntcodeVmStopCause};
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub enum InterpreterState {
     Initial,
     Halted,

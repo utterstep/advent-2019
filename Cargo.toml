@@ -23,9 +23,13 @@ members = [
     "day-24",
 
     "integration-test",
+    "run-all",
 ]
 
 [profile.release]
 debug = true
 lto = true
 codegen-units = 1
+
+[patch."https://github.com/utter-step/advent-utils"]
+advent-utils = { path = "../advent-utils" }

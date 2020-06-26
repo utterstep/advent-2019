@@ -86,10 +86,10 @@ impl SpaceImage {
                     .find_map(|l| {
                         let pixel = l[(x, y)];
 
-                        if pixel != 2 {
-                            Some(pixel)
-                        } else {
+                        if pixel == 2 {
                             None
+                        } else {
+                            Some(pixel)
                         }
                     })
                     .unwrap_or(2);

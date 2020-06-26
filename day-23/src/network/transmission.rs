@@ -1,6 +1,6 @@
 use super::Packet;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Transmission {
     src: usize,
     payload: Packet,

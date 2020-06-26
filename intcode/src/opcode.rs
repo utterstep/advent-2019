@@ -13,7 +13,7 @@ pub(crate) enum Operation {
     Unknown,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub(crate) enum ParameterMode {
     Position,
     Immediate,

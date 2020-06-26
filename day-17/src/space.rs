@@ -1,5 +1,6 @@
 use std::{
     convert::TryFrom,
+    error::Error,
     fmt::{self, Display},
     ops::Index,
     str::FromStr,
@@ -19,13 +20,21 @@ pub enum SpaceParseError {
     ObjectParseError(ObjectParseError),
 }
 
+impl Display for SpaceParseError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{:#?}", self)
+    }
+}
+
+impl Error for SpaceParseError {}
+
 impl From<ObjectParseError> for SpaceParseError {
     fn from(e: ObjectParseError) -> Self {
         Self::ObjectParseError(e)
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Space {
     map: Vec<Object>,
     width: usize,
@@ -70,13 +79,12 @@ impl FromStr for Space {
         let lines_have_equal_length = s.lines().all(|line| {
             height += 1;
 
-            match width {
-                Some(len) => line.len() == len,
-                None => {
-                    width.replace(line.len());
+            if let Some(len) = width {
+                line.len() == len
+            } else {
+                width.replace(line.len());
 
-                    true
-                }
+                true
             }
         });
 

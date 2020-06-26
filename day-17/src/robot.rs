@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, num::TryFromIntError};
+use std::{convert::TryFrom, error::Error, fmt, num::TryFromIntError};
 
 use intcode::{IntcodeVmError, Interpreter};
 
@@ -20,6 +20,21 @@ pub enum RobotError {
     IntcodeError(IntcodeVmError),
     TryFromIntError,
 }
+
+impl fmt::Display for RobotError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(
+            f,
+            "{}",
+            match self {
+                Self::TryFromIntError => "failed int conversion".to_owned(),
+                Self::IntcodeError(e) => format!("intcode error: {:#?}", e),
+            }
+        )
+    }
+}
+
+impl Error for RobotError {}
 
 impl From<IntcodeVmError> for RobotError {
     fn from(err: IntcodeVmError) -> Self {
@@ -46,8 +61,8 @@ impl Robot {
 
     pub fn run_cleaning(
         &mut self,
-        dict: CompressionDict,
-        routine: String,
+        dict: &CompressionDict,
+        routine: &str,
     ) -> Result<i64, RobotError> {
         #[cfg(debug_assertions)]
         const CAMERA_VIEW: &str = "y";

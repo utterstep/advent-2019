@@ -19,17 +19,16 @@ cpu MHz         : 4018.411
 cache size      : 9216 KB
 physical id     : 0
 
-utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 "bash ./run_all.sh"
-Benchmark #1: bash ./run_all.sh
-  Time (mean ± σ):      69.8 ms ±   0.6 ms    [User: 63.7 ms, System: 7.8 ms]
-  Range (min … max):    68.8 ms …  71.3 ms    42 runs
+utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 ./target/release/bench
+Benchmark #1: ./target/release/bench
+  Time (mean ± σ):     120.1 ms ±   0.8 ms    [User: 103.6 ms, System: 16.5 ms]
+  Range (min … max):   119.0 ms … 122.1 ms    24 runs
 ```
 
 Currently `day-12` (2nd part) is taking ~50% of all running time (~68ms, down from ~400ms initially).
 
 ## Growth points
 
-* benchmark: currently I'm measuring not only solutions, but also bash startup. Rewrite benchmark to increase accuracy
 * [day-3](./day-2): check, why precomputed sums looks slower, than brute force approach
 * [day-7](./day-7): get rid of [permutohedron](https://crates.io/crates/permutohedron) crate
 * [day-13](./day-13): more effective bot strategy (current time ~9ms because there are lot of redundant moves in the end)

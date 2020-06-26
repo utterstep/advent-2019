@@ -3,7 +3,7 @@ use std::{
     fmt::{self, Display},
 };
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Orientation {
     Up,
     Right,
@@ -36,7 +36,7 @@ pub enum ObjectParseError {
     UnknownSymbol(u8),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum Object {
     Empty,
     Scaffold,

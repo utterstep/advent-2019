@@ -1,6 +1,6 @@
 use std::iter::IntoIterator;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Packet {
     dst: usize,
     x: i64,

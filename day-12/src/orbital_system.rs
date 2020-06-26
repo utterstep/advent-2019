@@ -1,4 +1,8 @@
-use std::str::FromStr;
+use std::{
+    error::Error,
+    fmt::{self, Display},
+    str::FromStr,
+};
 
 use fnv::FnvHashSet;
 
@@ -7,7 +11,7 @@ use crate::utils::lcm;
 const DIMENSIONS: usize = 3;
 const N_MOONS: usize = 4;
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 struct Moon {
     coords: [i32; DIMENSIONS],
     velocities: [i32; DIMENSIONS],
@@ -30,6 +34,14 @@ impl Moon {
 #[derive(Debug)]
 pub struct IncorrectMoonFormat {}
 
+impl Display for IncorrectMoonFormat {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "Cannot parse given moon data")
+    }
+}
+
+impl Error for IncorrectMoonFormat {}
+
 impl FromStr for Moon {
     type Err = IncorrectMoonFormat;
 
@@ -48,7 +60,7 @@ impl FromStr for Moon {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct System {
     moons: [Moon; N_MOONS],
 }
@@ -59,7 +71,7 @@ impl FromStr for System {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let moons: Vec<_> = s
             .split('\n')
-            .map(|line| line.parse::<Moon>())
+            .map(str::parse)
             .collect::<Result<_, _>>()?;
 
         let moons = [moons[0], moons[1], moons[2], moons[3]];
@@ -104,7 +116,7 @@ impl System {
     }
 
     pub fn energy(&self) -> i32 {
-        self.moons.iter().map(|m| m.energy()).sum()
+        self.moons.iter().map(Moon::energy).sum()
     }
 
     fn moon_orbit_periods(mut self) -> Vec<usize> {

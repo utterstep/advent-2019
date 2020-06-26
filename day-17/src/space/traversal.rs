@@ -1,6 +1,6 @@
 use super::{Object, Orientation, Space};
 
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Command {
     TurnRight,
     TurnLeft,

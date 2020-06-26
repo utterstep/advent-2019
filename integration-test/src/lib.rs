@@ -8,13 +8,14 @@ mod tests {
             .current_dir("../")
             .arg("build")
             .arg("--release")
+            .arg("-p")
+            .arg("run-all")
             .status()
             .expect("failed to build");
 
         // assert that all existing solutions are valid after any change
-        let output = Command::new("bash")
+        let output = Command::new("./target/release/run-all")
             .current_dir("../")
-            .arg("./run_all.sh")
             .output()
             .expect("failed to run all solutions");
 

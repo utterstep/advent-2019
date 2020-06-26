@@ -17,7 +17,7 @@ fn gcd(mut a: i32, mut b: i32) -> i32 {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, Copy, Clone)]
 pub struct RationalAngle {
     divident: i32,
     divisor: i32,

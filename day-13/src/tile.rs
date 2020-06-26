@@ -15,11 +15,11 @@ pub enum Tile {
 impl Tile {
     pub fn get_coords(&self) -> Option<(usize, usize)> {
         match self {
-            Self::Empty { x, y } => Some((*x, *y)),
-            Self::Wall { x, y } => Some((*x, *y)),
-            Self::Block { x, y } => Some((*x, *y)),
-            Self::Paddle { x, y } => Some((*x, *y)),
-            Self::Ball { x, y } => Some((*x, *y)),
+            | Self::Empty { x, y }
+            | Self::Wall { x, y }
+            | Self::Block { x, y }
+            | Self::Paddle { x, y }
+            | Self::Ball { x, y } => Some((*x, *y)),
             _ => None,
         }
     }

@@ -98,7 +98,7 @@ pub fn estimate_angle(code: &[i64]) -> Angle {
 
     let alpha = f64::consts::FRAC_PI_2
         - (f64::consts::PI * 2.
-            + ((-ANGLE_ESTIMATOR_FLOAT).atan2(-right) - 0f64.atan2(left - right)));
+            + ((-ANGLE_ESTIMATOR_FLOAT).atan2(-right) - 0_f64.atan2(left - right)));
 
     Angle { left, right, alpha }
 }

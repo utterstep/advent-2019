@@ -5,7 +5,7 @@ use itertools::Itertools;
 
 use super::Packet;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Computer {
     vm: Interpreter,
     inbox: Vec<Packet>,

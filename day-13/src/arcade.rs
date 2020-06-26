@@ -17,7 +17,7 @@ use crate::{
     tile::{Tile, TileParseError},
 };
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Copy, Clone)]
 #[serde(rename_all = "snake_case")]
 pub enum EmulatorMode {
     Manual,
@@ -55,6 +55,7 @@ impl From<TileParseError> for EmulatorError {
 }
 
 impl Emulator {
+    #[must_use]
     pub fn new(interpreter: Interpreter, mode: EmulatorMode) -> Self {
         let tiles = iproduct!(MIN_Y..=MAX_Y, MIN_X..=MAX_X)
             .map(|(x, y)| Tile::try_from(&[x as i64, y as i64, 0][..]).unwrap())
@@ -95,7 +96,7 @@ impl Emulator {
                     }
 
                     let input = match self.mode {
-                        EmulatorMode::Manual => match self.get_input() {
+                        EmulatorMode::Manual => match Self::get_input() {
                             Some(input) => input,
                             None => continue,
                         },
@@ -163,7 +164,7 @@ impl Emulator {
         }
     }
 
-    fn get_input(&mut self) -> Option<i64> {
+    fn get_input() -> Option<i64> {
         let stdin = io::stdin();
         let mut stdout = io::stdout().into_raw_mode().unwrap();
         write!(stdout, "\nMake your move (a, s, d): ").unwrap();

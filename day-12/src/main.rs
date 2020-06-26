@@ -1,33 +1,9 @@
 use std::error::Error;
 
-use advent_utils::{get_config, read_file, Part};
+use advent_utils::Solver;
 
-mod orbital_system;
-mod utils;
-
-use orbital_system::System;
-
-const N_STEPS: usize = 1000;
+use day_12::Solution;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let config = get_config()?;
-    let mut system = read_file(config.input_file)?
-        .trim()
-        .parse::<System>()
-        .unwrap();
-
-    match config.part {
-        Part::One => {
-            for _ in 0..N_STEPS {
-                system.advance();
-            }
-
-            println!("Total energy after {} runs: {}", N_STEPS, system.energy());
-        }
-        Part::Two => {
-            println!("System cycle length is: {}", system.cycle_length());
-        }
-    }
-
-    Ok(())
+    Solution::solve_env_config()
 }

@@ -11,4 +11,3 @@ advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 intcode = { path = "../intcode" }
 
 itertools = "0.9"
-serde = { version = "1", features = ["derive"]}

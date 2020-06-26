@@ -31,8 +31,7 @@ fn slice_contains<T: PartialEq>(haystack: &[T], needle: &[T]) -> bool {
     let end = haystack
         .len()
         .checked_sub(needle.len())
-        .map(|end| end + 1)
-        .unwrap_or(0);
+        .map_or(0, |end| end + 1);
 
     (0..end).any(|i| &haystack[i..(i + needle.len())] == needle)
 }
@@ -44,8 +43,7 @@ fn find_subslice<'a, T: PartialEq>(
     let end = haystack
         .len()
         .checked_sub(needle.len())
-        .map(|end| end + 1)
-        .unwrap_or(0);
+        .map_or(0, |end| end + 1);
 
     (0..end).filter(move |&i| &haystack[i..(i + needle.len())] == needle)
 }

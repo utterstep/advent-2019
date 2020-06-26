@@ -4,7 +4,7 @@ use std::{
     str::FromStr,
 };
 
-#[derive(Debug, Hash, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Copy, Clone)]
 pub struct World(u32);
 
 #[derive(Debug)]
@@ -35,8 +35,8 @@ impl FromStr for World {
         s.lines()
             .flat_map(|line| {
                 line.chars().map(|c| match c {
-                    '.' => Ok(0u32),
-                    '#' => Ok(1u32),
+                    '.' => Ok(0_u32),
+                    '#' => Ok(1_u32),
                     c => Err(WorldParseError::InvalidInputValue(c)),
                 })
             })
@@ -100,6 +100,26 @@ impl World {
 
         Self(next)
     }
+
+    #[allow(dead_code)]
+    pub fn left(self) -> usize {
+        (self.0 & 0b00001_00001_00001_00001_00001).count_ones() as usize
+    }
+
+    #[allow(dead_code)]
+    pub fn right(self) -> usize {
+        (self.0 & 0b10000_10000_10000_10000_10000).count_ones() as usize
+    }
+
+    #[allow(dead_code)]
+    pub fn top(self) -> usize {
+        (self.0 & 0b00000_00000_00000_00000_11111).count_ones() as usize
+    }
+
+    #[allow(dead_code)]
+    pub fn bottom(self) -> usize {
+        (self.0 & 0b11111_00000_00000_00000_00000).count_ones() as usize
+    }
 }
 
 #[cfg(test)]
@@ -152,9 +172,9 @@ mod tests {
 
     #[test]
     fn test_repeat_example() {
-        use std::collections::HashSet;
+        use std::collections::BTreeSet;
 
-        let mut existing = HashSet::new();
+        let mut existing = BTreeSet::new();
 
         let mut world: World = indoc!(
             "

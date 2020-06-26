@@ -8,7 +8,7 @@ struct Parameter {
     value: i64,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Copy, Clone)]
 pub enum IntcodeVmError {
     UnknownOpcode { opcode: i64, index: usize },
     WriteToConstantProhibited,

@@ -2,7 +2,7 @@ use fnv::FnvHashMap as HashMap;
 
 use crate::utils::minmax;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum Color {
     Black = 0,
     White = 1,
@@ -19,7 +19,7 @@ enum Orientation {
 const LEFT_TURN: i64 = 0;
 const RIGHT_TURN: i64 = 1;
 
-#[derive(Debug, Hash, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, Hash, PartialEq, Eq, Copy, Clone)]
 struct Position {
     x: i32,
     y: i32,
