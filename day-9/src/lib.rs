@@ -4,6 +4,7 @@ use advent_utils::{read_file, Part, Solver};
 
 use intcode::Interpreter;
 
+#[derive(Debug)]
 pub struct Solution {
     interpreter: Interpreter,
 }

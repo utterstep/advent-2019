@@ -6,6 +6,7 @@ mod world;
 
 use world::World;
 
+#[derive(Debug)]
 pub struct Solution {
     world: World,
 }

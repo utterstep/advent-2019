@@ -10,6 +10,7 @@ mod tile;
 
 pub use arcade::{Emulator, EmulatorMode};
 
+#[derive(Debug)]
 pub struct Solution {
     interpreter: Interpreter,
     mode: Option<EmulatorMode>,

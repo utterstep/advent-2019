@@ -15,6 +15,7 @@ use space::Space;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
+#[derive(Debug)]
 pub struct Solution {
     code: Vec<i64>,
     space: Space,

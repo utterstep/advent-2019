@@ -4,6 +4,7 @@ use advent_utils::{read_file, Part, Solver};
 
 mod amplifier;
 
+#[derive(Debug)]
 pub struct Solution {
     code: Vec<i64>,
 }

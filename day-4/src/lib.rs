@@ -57,6 +57,7 @@ fn is_possible_password_strong(mut n: u32) -> bool {
     have_clear_double
 }
 
+#[derive(Debug)]
 pub struct Solution {
     min: u32,
     max: u32,

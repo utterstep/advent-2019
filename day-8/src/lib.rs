@@ -6,6 +6,7 @@ mod sif;
 
 use sif::SpaceImage;
 
+#[derive(Debug)]
 pub struct Solution {
     image: SpaceImage,
 }

@@ -9,6 +9,7 @@ mod wire;
 
 use wire::Wire;
 
+#[derive(Debug)]
 pub struct Solution {
     w1: Wire,
     w2: Wire,

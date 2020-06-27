@@ -36,6 +36,7 @@ impl Iterator for FuelRequirement {
     }
 }
 
+#[derive(Debug)]
 pub struct Solution {
     modules: Vec<u32>,
 }

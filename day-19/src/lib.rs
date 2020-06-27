@@ -7,6 +7,7 @@ const VIEW_DISTANCE: i64 = 50;
 
 mod solve;
 
+#[derive(Debug)]
 pub struct Solution {
     code: Vec<i64>,
 }

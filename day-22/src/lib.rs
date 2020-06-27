@@ -28,6 +28,7 @@ pub enum SimulationMode {
     Card,
 }
 
+#[derive(Debug)]
 pub struct Solution {
     movements: Vec<Movement>,
     mode: SimulationMode,

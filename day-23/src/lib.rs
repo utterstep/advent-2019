@@ -9,6 +9,7 @@ use network::{Network, NAT};
 
 const NETWORK_SIZE: usize = 50;
 
+#[derive(Debug)]
 pub struct Solution {
     network: Network,
 }

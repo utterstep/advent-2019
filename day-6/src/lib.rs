@@ -6,6 +6,7 @@ mod orbit_graph;
 
 use orbit_graph::{Orbit, Planets};
 
+#[derive(Debug)]
 pub struct Solution {
     input: String,
 }

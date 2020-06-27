@@ -7,6 +7,7 @@ mod space;
 
 use space::Space;
 
+#[derive(Debug)]
 pub struct Solution {
     space: Space,
 }

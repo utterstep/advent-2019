@@ -11,6 +11,7 @@ mod utils;
 use robot::Color;
 use solver::paint_panels;
 
+#[derive(Debug)]
 pub struct Solution {
     interpreter: Interpreter,
 }

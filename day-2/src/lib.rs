@@ -6,6 +6,7 @@ use itertools::iproduct;
 
 const TARGET: i64 = 19_690_720;
 
+#[derive(Debug)]
 pub struct Solution {
     code: Vec<i64>,
 }

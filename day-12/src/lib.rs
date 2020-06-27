@@ -9,6 +9,7 @@ use orbital_system::System;
 
 const N_STEPS: usize = 1000;
 
+#[derive(Debug)]
 pub struct Solution {
     system: System,
 }
