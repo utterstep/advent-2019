@@ -19,8 +19,8 @@ cpu MHz         : 4018.411
 cache size      : 9216 KB
 physical id     : 0
 
-utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 ./target/release/bench
-Benchmark #1: ./target/release/bench
+utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 ./target/release/run-all
+Benchmark #1: ./target/release/run-all
   Time (mean ± σ):     120.1 ms ±   0.8 ms    [User: 103.6 ms, System: 16.5 ms]
   Range (min … max):   119.0 ms … 122.1 ms    24 runs
 ```

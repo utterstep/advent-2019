@@ -3,14 +3,15 @@
 [[package]]
 name = "advent-utils"
 version = "0.1.0"
+source = "git+https://github.com/utter-step/advent-utils#9e87614392176dce81bbc1d2bb69da6184a90aab"
 dependencies = [
  "envy 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "aho-corasick"
-version = "0.7.10"
+version = "0.7.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "memchr 2.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -30,23 +31,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "day-1"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
 ]
 
 [[package]]
 name = "day-10"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-11"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
  "intcode 0.1.0",
 ]
@@ -55,19 +56,19 @@ dependencies = [
 name = "day-12"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-13"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
  "termion 1.5.5 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -75,20 +76,19 @@ dependencies = [
 name = "day-17"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
- "indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "intcode 0.1.0",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck_macros 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "suffix 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-19"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -97,7 +97,7 @@ dependencies = [
 name = "day-2"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -106,15 +106,15 @@ dependencies = [
 name = "day-22"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
- "serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-23"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -123,15 +123,15 @@ dependencies = [
 name = "day-24"
 version = "0.0.0"
 dependencies = [
- "advent-utils 0.1.0",
- "indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-3"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -139,15 +139,15 @@ dependencies = [
 name = "day-4"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
- "serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-5"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
 ]
 
@@ -155,16 +155,16 @@ dependencies = [
 name = "day-6"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "day-7"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
  "permutohedron 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -173,7 +173,7 @@ dependencies = [
 name = "day-8"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "bytecount 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -182,7 +182,7 @@ dependencies = [
 name = "day-9"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "intcode 0.1.0",
 ]
 
@@ -205,7 +205,7 @@ name = "envy"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -225,23 +225,23 @@ dependencies = [
 
 [[package]]
 name = "indoc"
-version = "0.3.5"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "indoc-impl 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "indoc-impl 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro-hack 0.5.16 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "indoc-impl"
-version = "0.3.5"
+version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro-hack 0.5.16 (registry+https://github.com/rust-lang/crates.io-index)",
  "proc-macro2 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)",
- "unindent 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unindent 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -308,7 +308,7 @@ name = "proc-macro2"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "unicode-xid 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicode-xid 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -329,7 +329,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -395,7 +395,7 @@ name = "regex"
 version = "1.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "aho-corasick 0.7.10 (registry+https://github.com/rust-lang/crates.io-index)",
+ "aho-corasick 0.7.13 (registry+https://github.com/rust-lang/crates.io-index)",
  "memchr 2.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex-syntax 0.6.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "thread_local 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -410,7 +410,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "run-all"
 version = "0.1.0"
 dependencies = [
- "advent-utils 0.1.0",
+ "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
  "day-1 0.1.0",
  "day-10 0.1.0",
  "day-11 0.1.0",
@@ -433,35 +433,30 @@ dependencies = [
 
 [[package]]
 name = "serde"
-version = "1.0.112"
+version = "1.0.114"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "serde_derive 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_derive 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "serde_derive"
-version = "1.0.112"
+version = "1.0.114"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "syn 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
-name = "suffix"
-version = "1.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-
-[[package]]
 name = "syn"
-version = "1.0.31"
+version = "1.0.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "quote 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
- "unicode-xid 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "unicode-xid 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -485,12 +480,12 @@ dependencies = [
 
 [[package]]
 name = "unicode-xid"
-version = "0.2.0"
+version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "unindent"
-version = "0.1.5"
+version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -499,7 +494,8 @@ version = "0.9.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [metadata]
-"checksum aho-corasick 0.7.10 (registry+https://github.com/rust-lang/crates.io-index)" = "8716408b8bc624ed7f65d223ddb9ac2d044c0547b6fa4b0d554f3a9540496ada"
+"checksum advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)" = "<none>"
+"checksum aho-corasick 0.7.13 (registry+https://github.com/rust-lang/crates.io-index)" = "043164d8ba5c4c3035fec9bbee8647c0261d788f3474306f93bb65901cae0e86"
 "checksum bytecount 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b0017894339f586ccb943b01b9555de56770c11cda818e7e3d8bd93f4ed7f46e"
 "checksum cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)" = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
 "checksum either 1.5.3 (registry+https://github.com/rust-lang/crates.io-index)" = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
@@ -507,8 +503,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum envy 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f938a4abd5b75fe3737902dbc2e79ca142cc1526827a9e40b829a086758531a9"
 "checksum fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)" = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
 "checksum getrandom 0.1.14 (registry+https://github.com/rust-lang/crates.io-index)" = "7abc8dd8451921606d809ba32e95b6111925cd2906060d2dcc29c070220503eb"
-"checksum indoc 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "79255cf29f5711995ddf9ec261b4057b1deb34e66c90656c201e41376872c544"
-"checksum indoc-impl 0.3.5 (registry+https://github.com/rust-lang/crates.io-index)" = "54554010aa3d17754e484005ea0022f1c93839aabc627c2c55f3d7b47206134c"
+"checksum indoc 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)" = "47741a8bc60fb26eb8d6e0238bbb26d8575ff623fdc97b1a2c00c050b9684ed8"
+"checksum indoc-impl 0.3.6 (registry+https://github.com/rust-lang/crates.io-index)" = "ce046d161f000fffde5f432a0d034d0341dc152643b2598ed5bfce44c4f3a8f0"
 "checksum itertools 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)" = "284f18f85651fe11e8a991b2adb42cb078325c996ed026d994719efcfca1d54b"
 "checksum lazy_static 1.4.0 (registry+https://github.com/rust-lang/crates.io-index)" = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 "checksum libc 0.2.71 (registry+https://github.com/rust-lang/crates.io-index)" = "9457b06509d27052635f90d6466700c65095fdf75409b3fbdd903e988b886f49"
@@ -530,12 +526,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum redox_termios 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)" = "7e891cfe48e9100a70a3b6eb652fef28920c117d366339687bd5576160db0f76"
 "checksum regex 1.3.9 (registry+https://github.com/rust-lang/crates.io-index)" = "9c3780fcf44b193bc4d09f36d2a3c87b251da4a046c87795a0d35f4f927ad8e6"
 "checksum regex-syntax 0.6.18 (registry+https://github.com/rust-lang/crates.io-index)" = "26412eb97c6b088a6997e05f69403a802a92d520de2f8e63c2b65f9e0f47c4e8"
-"checksum serde 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)" = "736aac72d1eafe8e5962d1d1c3d99b0df526015ba40915cb3c49d042e92ec243"
-"checksum serde_derive 1.0.112 (registry+https://github.com/rust-lang/crates.io-index)" = "bf0343ce212ac0d3d6afd9391ac8e9c9efe06b533c8d33f660f6390cc4093f57"
-"checksum suffix 1.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "852c4bf4045a083483eb7ec6ffeb088f4befebc0738a8d86d1b169f12c52214d"
-"checksum syn 1.0.31 (registry+https://github.com/rust-lang/crates.io-index)" = "b5304cfdf27365b7585c25d4af91b35016ed21ef88f17ced89c7093b43dba8b6"
+"checksum serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)" = "5317f7588f0a5078ee60ef675ef96735a1442132dc645eb1d12c018620ed8cd3"
+"checksum serde_derive 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)" = "2a0be94b04690fbaed37cddffc5c134bf537c8e3329d53e982fe04c374978f8e"
+"checksum syn 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)" = "e8d5d96e8cbb005d6959f119f773bfaebb5684296108fb32600c00cde305b2cd"
 "checksum termion 1.5.5 (registry+https://github.com/rust-lang/crates.io-index)" = "c22cec9d8978d906be5ac94bceb5a010d885c626c4c8855721a4dbd20e3ac905"
 "checksum thread_local 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d40c6d1b69745a6ec6fb1ca717914848da4b44ae29d9b3080cbee91d72a69b14"
-"checksum unicode-xid 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)" = "826e7639553986605ec5979c7dd957c7895e93eabed50ab2ffa7f6128a75097c"
-"checksum unindent 0.1.5 (registry+https://github.com/rust-lang/crates.io-index)" = "63f18aa3b0e35fed5a0048f029558b1518095ffe2a0a31fb87c93dece93a4993"
+"checksum unicode-xid 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
+"checksum unindent 0.1.6 (registry+https://github.com/rust-lang/crates.io-index)" = "af41d708427f8fd0e915dcebb2cae0f0e6acb2a939b2d399c265c39a38a18942"
 "checksum wasi 0.9.0+wasi-snapshot-preview1 (registry+https://github.com/rust-lang/crates.io-index)" = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519"
