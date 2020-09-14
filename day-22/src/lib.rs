@@ -3,22 +3,23 @@ use std::{convert::TryFrom, error::Error};
 use advent_utils::{parse_file, Part, Solver};
 use serde::Deserialize;
 
-mod card;
-mod deck;
-mod movement;
-mod traits;
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
 
-use card::Card;
-use deck::Deck;
+mod movement;
+mod simulator;
+
 use movement::Movement;
-use traits::Simulator;
+use simulator::{Card, Deck, Math, Simulator};
 
 const DECK_SIZE_PT1: usize = 10007;
 const DECK_SIZE_PT2: usize = 119_315_717_514_047;
-const CARD_TO_FIND_PT1: i64 = 2019;
-const CARD_TO_FIND_PT2: i64 = 2020;
+const CARD_TO_FIND: i64 = 2019;
+const IDX_TO_LOOKUP: usize = 2020;
 
 const ITERS_PT1: usize = 1;
+// const ITERS_PT2: usize = 1;
 const ITERS_PT2: usize = 101_741_582_076_661;
 
 #[derive(Debug, Deserialize)]
@@ -26,6 +27,7 @@ const ITERS_PT2: usize = 101_741_582_076_661;
 pub enum SimulationMode {
     Deck,
     Card,
+    Math,
 }
 
 #[derive(Debug)]
@@ -42,7 +44,7 @@ impl TryFrom<String> for Solution {
 
         Ok(Self {
             movements,
-            mode: SimulationMode::Card,
+            mode: SimulationMode::Math,
         })
     }
 }
@@ -53,11 +55,6 @@ impl Solver for Solution {
     }
 
     fn solve(&self, part: Part) -> String {
-        let card = match part {
-            Part::One => CARD_TO_FIND_PT1,
-            Part::Two => CARD_TO_FIND_PT2,
-        };
-
         let deck_size = match part {
             Part::One => DECK_SIZE_PT1,
             Part::Two => DECK_SIZE_PT2,
@@ -69,21 +66,25 @@ impl Solver for Solution {
         };
 
         let mut simulator: Box<dyn Simulator> = match self.mode {
-            SimulationMode::Card => Box::new(Card::new(deck_size as i64, card)),
-            SimulationMode::Deck => Box::new(Deck::new(deck_size, card)),
+            SimulationMode::Card => Box::new(Card::new(deck_size as i64, CARD_TO_FIND)),
+            SimulationMode::Deck => Box::new(Deck::new(deck_size)),
+            SimulationMode::Math => Box::new(Math::new(deck_size as i64)),
         };
 
-        for _ in 0..iters {
-            for movement in &self.movements {
-                simulator.execute(movement);
-            }
+        simulator.run(&self.movements, iters);
+
+        match part {
+            Part::One => format!(
+                "card {} is at idx {}",
+                CARD_TO_FIND,
+                simulator.find_card(CARD_TO_FIND)
+            ),
+            Part::Two => format!(
+                "there is card {} at idx {}",
+                simulator.get_card_at_idx(IDX_TO_LOOKUP),
+                IDX_TO_LOOKUP
+            ),
         }
-
-        format!("card {} is at idx {}", card, simulator.get_position())
-    }
-
-    fn implemented_parts() -> Vec<Part> {
-        vec![Part::One]
     }
 }
 

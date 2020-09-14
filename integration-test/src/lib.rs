@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use pretty_assertions::assert_eq;
     use std::process::Command;
 
     #[test]
@@ -20,8 +21,13 @@ mod tests {
             .expect("failed to run all solutions");
 
         assert_eq!(
-            String::from_utf8(output.stdout).unwrap(),
-            include_str!("../reference.txt"),
+            String::from_utf8(output.stdout)
+                .unwrap()
+                .split('\n')
+                .collect::<Vec<_>>(),
+            include_str!("../reference.txt")
+                .split('\n')
+                .collect::<Vec<_>>(),
         );
     }
 }

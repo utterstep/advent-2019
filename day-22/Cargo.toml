@@ -10,3 +10,7 @@ edition = "2018"
 advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 
 serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+quickcheck = "0.9"
+quickcheck_macros = "0.9"

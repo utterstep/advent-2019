@@ -1,21 +1,18 @@
 use std::collections::VecDeque;
 
-use crate::{movement::Movement, traits::Simulator};
+use crate::{Movement, Simulator};
 
 #[derive(Debug)]
 pub struct Deck {
     cards: VecDeque<i64>,
-    needle: i64,
 }
 
 impl Deck {
-    pub fn new(size: usize, needle: i64) -> Self {
-        assert!(needle < size as i64);
-
+    pub fn new(size: usize) -> Self {
         let mut cards = VecDeque::with_capacity(size);
         (0..size as i64).for_each(|n| cards.push_back(n));
 
-        Self { cards, needle }
+        Self { cards }
     }
 }
 
@@ -59,8 +56,12 @@ impl Simulator for Deck {
         }
     }
 
-    fn get_position(&self) -> usize {
-        self.cards.iter().position(|&c| c == self.needle).unwrap()
+    fn find_card(&self, needle: i64) -> usize {
+        self.cards.iter().position(|&c| c == needle).unwrap()
+    }
+
+    fn get_card_at_idx(&self, idx: usize) -> i64 {
+        self.cards[idx]
     }
 }
 
@@ -70,7 +71,7 @@ mod tests {
 
     #[test]
     fn test_deck() {
-        let mut deck = Deck::new(10, 1);
+        let mut deck = Deck::new(10);
         deck.execute(&Movement::DealIn);
 
         assert_eq!(
@@ -78,7 +79,7 @@ mod tests {
             VecDeque::from(vec![9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
         );
 
-        let mut deck = Deck::new(10, 1);
+        let mut deck = Deck::new(10);
         deck.execute(&Movement::Cut(3));
 
         assert_eq!(
@@ -86,7 +87,7 @@ mod tests {
             VecDeque::from(vec![3, 4, 5, 6, 7, 8, 9, 0, 1, 2])
         );
 
-        let mut deck = Deck::new(10, 1);
+        let mut deck = Deck::new(10);
         deck.execute(&Movement::Cut(-4));
 
         assert_eq!(
@@ -94,7 +95,7 @@ mod tests {
             VecDeque::from(vec![6, 7, 8, 9, 0, 1, 2, 3, 4, 5])
         );
 
-        let mut deck = Deck::new(10, 1);
+        let mut deck = Deck::new(10);
         deck.execute(&Movement::DealWithIncrement(3));
 
         assert_eq!(
