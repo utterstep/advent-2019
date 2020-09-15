@@ -92,7 +92,7 @@ pub(super) fn inverse_mod_root(n: i64, modulo: i64) -> i64 {
     );
 
     let x = gcd_extended.x * gcd;
-    (x.rem_euclid(modulo) + modulo).rem_euclid(modulo)
+    x.rem_euclid(modulo)
 }
 
 /// For given `x`, `pow_to`, `modulo` compute
@@ -186,7 +186,7 @@ mod tests {
     }
 
     #[quickcheck]
-    fn sum_of_pows_compared_to_naive(x: i64, pow_to: usize) -> TestResult {
+    fn sum_of_pows_compared_check(x: i64, pow_to: usize) -> TestResult {
         if pow_to > 1000 {
             return TestResult::discard();
         }
