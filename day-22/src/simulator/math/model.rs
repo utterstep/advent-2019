@@ -3,11 +3,13 @@ use crate::Movement;
 use super::algo;
 
 #[derive(Debug)]
-/// xM + N
+/// Mathematical model of shuffle routine.
+///
+/// Target card position is `xM + N (mod deck_size)`
 pub(super) struct Model {
-    n: i64,
-    m: i64,
     deck_size: i64,
+    m: i64,
+    n: i64,
 }
 
 impl Model {
@@ -51,6 +53,7 @@ impl Model {
         algo::mult128(position - self.n, inverse_m, self.deck_size)
     }
 
+    /// see `solution-thoughts.ipynb` for the details
     pub(super) fn recursive_apply(&mut self, n_times: usize) {
         let m_pow_n = algo::bin_pow(self.m, n_times, self.deck_size);
         let sum_m_pows_to_n_minus_one = algo::sum_of_pows(self.m, n_times - 1, self.deck_size);

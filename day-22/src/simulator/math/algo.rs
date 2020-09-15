@@ -1,3 +1,5 @@
+/// Compute `(x * y) mod modulo` assuming that intermediate
+/// result can overflow i64
 #[inline(always)]
 pub(super) fn mult128(x: i64, y: i64, modulo: i64) -> i64 {
     ((x as i128 * y as i128).rem_euclid(modulo as i128)) as i64
@@ -78,6 +80,8 @@ fn gcd_extended(a: i64, b: i64) -> GcdSolution {
     }
 }
 
+/// For given number `n` and `modulo` compute `x`
+/// such as `n * x (mod modulo) = 1`.
 pub(super) fn inverse_mod_root(n: i64, modulo: i64) -> i64 {
     let gcd_extended = gcd_extended(n, modulo);
     let gcd = gcd_extended.gcd;
@@ -91,8 +95,43 @@ pub(super) fn inverse_mod_root(n: i64, modulo: i64) -> i64 {
     (x.rem_euclid(modulo) + modulo).rem_euclid(modulo)
 }
 
+/// For given `x`, `pow_to`, `modulo` compute
+///
+/// `(x^0 + x^1 + ... + x^{pow_to - 1} + x^{pow_to}) mod modulo`
+///
+/// Complexity is O(log(x) + log(pow_to))
+///
+/// ### Examples
+///
+/// ```rust,ignore
+/// # // test is ignored as I couldn't find a way to import
+/// # // `sum_of_pows` function here :(
+/// const MODULO: i64 = 119315717514047;
+///
+/// assert_eq!(sum_of_pows(2, 1, MODULO), 3);
+/// assert_eq!(sum_of_pows(2, 2, MODULO), 7);
+/// assert_eq!(sum_of_pows(2, 3, MODULO), 15);
+///
+/// /// here we get (1 + -2) mod 119315717514047
+/// assert_eq!(sum_of_pows(-2, 1, MODULO), 119315717514046);
+///
+/// assert_eq!(sum_of_pows(-1, 0, MODULO), 1);
+/// assert_eq!(sum_of_pows(-1, 1, MODULO), 0);
+/// assert_eq!(sum_of_pows(-1, 2, MODULO), 1);
+/// assert_eq!(sum_of_pows(-1, 3, MODULO), 0);
+/// ```
 pub(super) fn sum_of_pows(x: i64, pow_to: usize, modulo: i64) -> i64 {
-    assert_ne!(x.abs(), 1, "number must be greater than zero");
+    if x == 1 || pow_to == 0 {
+        return (pow_to + 1) as i64;
+    }
+
+    if x == 0 {
+        return 0;
+    }
+
+    if x == -1 {
+        return ((pow_to & 1) ^ 1) as i64;
+    }
 
     let root = inverse_mod_root(x - 1, modulo);
 
@@ -107,7 +146,20 @@ mod tests {
 
     const MODULO: i64 = 119315717514047;
 
+    #[quickcheck]
+    fn inverse_mod_root_check(x: i64) {
+        if x == 0 {
+            return;
+        }
+
+        assert_eq!(mult128(x, inverse_mod_root(x, MODULO), MODULO), 1);
+    }
+
     fn sum_of_pows_naive(x: i64, pow_to: usize, modulo: i64) -> i64 {
+        if x == 0 {
+            return 0;
+        }
+
         let mut cur = 1;
         let mut s: i64 = 0;
 
@@ -122,17 +174,20 @@ mod tests {
     #[test]
     fn test_simple_cases() {
         assert_eq!(sum_of_pows(2, 1, MODULO), 3);
-
         assert_eq!(sum_of_pows(2, 2, MODULO), 7);
-
         assert_eq!(sum_of_pows(2, 3, MODULO), 15);
 
         assert_eq!(sum_of_pows(-2, 1, MODULO), 119315717514046);
+
+        assert_eq!(sum_of_pows(-1, 0, MODULO), 1);
+        assert_eq!(sum_of_pows(-1, 1, MODULO), 0);
+        assert_eq!(sum_of_pows(-1, 2, MODULO), 1);
+        assert_eq!(sum_of_pows(-1, 3, MODULO), 0);
     }
 
     #[quickcheck]
     fn sum_of_pows_compared_to_naive(x: i64, pow_to: usize) -> TestResult {
-        if pow_to == 0 || pow_to > 1000 || x.abs() <= 1 {
+        if pow_to > 1000 {
             return TestResult::discard();
         }
 

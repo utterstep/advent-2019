@@ -1,6 +1,7 @@
 use std::{convert::TryFrom, error::Error};
 
 use advent_utils::{parse_file, Part, Solver};
+use enum_dispatch::enum_dispatch;
 use serde::Deserialize;
 
 #[cfg(test)]
@@ -19,12 +20,21 @@ const CARD_TO_FIND: i64 = 2019;
 const IDX_TO_LOOKUP: usize = 2020;
 
 const ITERS_PT1: usize = 1;
-// const ITERS_PT2: usize = 1;
 const ITERS_PT2: usize = 101_741_582_076_661;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SimulationMode {
+    Deck,
+    Card,
+    Math,
+}
+
+// there is no rational need in `enum_dispatch` here,
+// I just wanted to try using it :)
+#[enum_dispatch(Simulator)]
+#[derive(Debug)]
+pub enum Realization {
     Deck,
     Card,
     Math,
@@ -65,10 +75,10 @@ impl Solver for Solution {
             Part::Two => ITERS_PT2,
         };
 
-        let mut simulator: Box<dyn Simulator> = match self.mode {
-            SimulationMode::Card => Box::new(Card::new(deck_size as i64, CARD_TO_FIND)),
-            SimulationMode::Deck => Box::new(Deck::new(deck_size)),
-            SimulationMode::Math => Box::new(Math::new(deck_size as i64)),
+        let mut simulator = match self.mode {
+            SimulationMode::Card => Realization::from(Card::new(deck_size as i64, CARD_TO_FIND)),
+            SimulationMode::Deck => Realization::from(Deck::new(deck_size)),
+            SimulationMode::Math => Realization::from(Math::new(deck_size as i64)),
         };
 
         simulator.run(&self.movements, iters);

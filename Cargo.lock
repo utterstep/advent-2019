@@ -124,6 +124,7 @@ name = "day-22"
 version = "0.1.0"
 dependencies = [
  "advent-utils 0.1.0 (git+https://github.com/utter-step/advent-utils)",
+ "enum_dispatch 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck 0.9.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "quickcheck_macros 0.9.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 1.0.114 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -214,6 +215,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "either"
 version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "enum_dispatch"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "once_cell 1.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "proc-macro2 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quote 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)",
+ "syn 1.0.33 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "env_logger"
@@ -313,6 +325,11 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "numtoa"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "once_cell"
+version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
@@ -567,6 +584,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum ctor 0.1.15 (registry+https://github.com/rust-lang/crates.io-index)" = "39858aa5bac06462d4dd4b9164848eb81ffc4aa5c479746393598fd193afa227"
 "checksum difference 2.0.0 (registry+https://github.com/rust-lang/crates.io-index)" = "524cbf6897b527295dff137cec09ecf3a05f4fddffd7dfcd1585403449e74198"
 "checksum either 1.5.3 (registry+https://github.com/rust-lang/crates.io-index)" = "bb1f6b1ce1c140482ea30ddd3335fc0024ac7ee112895426e0a629a6c20adfe3"
+"checksum enum_dispatch 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "9d2984c9b91ef2cd76b29bbc4b6f123b146e73a4bae7dbde490bd5115f6f8f7d"
 "checksum env_logger 0.7.1 (registry+https://github.com/rust-lang/crates.io-index)" = "44533bbbb3bb3c1fa17d9f2e4e38bbbaf8396ba82193c4cb1b6445d711445d36"
 "checksum envy 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f938a4abd5b75fe3737902dbc2e79ca142cc1526827a9e40b829a086758531a9"
 "checksum fnv 1.0.7 (registry+https://github.com/rust-lang/crates.io-index)" = "3f9eec918d3f24069decb9af1554cad7c880e2da24a9afd88aca000531ab82c1"
@@ -579,6 +597,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 "checksum log 0.4.8 (registry+https://github.com/rust-lang/crates.io-index)" = "14b6052be84e6b71ab17edffc2eeabf5c2c3ae1fdb464aae35ac50c67a44e1f7"
 "checksum memchr 2.3.3 (registry+https://github.com/rust-lang/crates.io-index)" = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 "checksum numtoa 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)" = "b8f8bdf33df195859076e54ab11ee78a1b208382d3a26ec40d142ffc1ecc49ef"
+"checksum once_cell 1.4.1 (registry+https://github.com/rust-lang/crates.io-index)" = "260e51e7efe62b592207e9e13a68e43692a7a279171d6ba57abd208bf23645ad"
 "checksum output_vt100 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)" = "53cdc5b785b7a58c5aad8216b3dfa114df64b0b06ae6e1501cef91df2fbdf8f9"
 "checksum permutohedron 0.2.4 (registry+https://github.com/rust-lang/crates.io-index)" = "b687ff7b5da449d39e418ad391e5e08da53ec334903ddbb921db208908fc372c"
 "checksum ppv-lite86 0.2.8 (registry+https://github.com/rust-lang/crates.io-index)" = "237a5ed80e274dbc66f86bd59c1e25edc039660be53194b5fe0a482e0f2612ea"

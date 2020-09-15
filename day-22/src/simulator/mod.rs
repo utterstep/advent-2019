@@ -1,3 +1,5 @@
+use enum_dispatch::enum_dispatch;
+
 use crate::movement::Movement;
 
 mod card;
@@ -8,6 +10,7 @@ pub use card::Card;
 pub use deck::Deck;
 pub use math::Math;
 
+#[enum_dispatch]
 pub trait Simulator {
     fn execute(&mut self, movement: &Movement);
 
