@@ -1,6 +1,6 @@
 on:
-  push: true
-  pull_request: true
+  push:
+  pull_request:
   schedule:
     - cron: "0 0 * * SAT"
 
