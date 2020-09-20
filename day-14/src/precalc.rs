@@ -74,6 +74,7 @@ impl<'a> TryFrom<&'a str> for SolutionPrecalc<'a> {
 impl<'a> SolutionPrecalc<'a> {
     pub fn ore_requirements(&self, fuel_required: u64) -> u64 {
         let mut requirements = Map::default();
+        requirements.reserve(self.recipe_data.len() + 1);
         requirements.insert(FUEL, fuel_required);
 
         for material in &self.material_order {

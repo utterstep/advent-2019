@@ -19,10 +19,10 @@ cpu MHz         : 4018.411
 cache size      : 9216 KB
 physical id     : 0
 
-utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 ./target/release/run-all
+utterstep@utterstep-nix:~/my/advent-2019$ taskset -c 3 hyperfine --warmup 20 ./target/release/run-all
 Benchmark #1: ./target/release/run-all
-  Time (mean ± σ):     122.4 ms ±   0.4 ms    [User: 107.4 ms, System: 15.0 ms]
-  Range (min … max):   121.6 ms … 123.4 ms    24 runs
+  Time (mean ± σ):     121.3 ms ±   0.5 ms    [User: 106.6 ms, System: 14.6 ms]
+  Range (min … max):   120.4 ms … 122.8 ms    24 runs
 ```
 
 Currently `day-12` (2nd part) is taking ~50% of all running time (~68ms, down from ~400ms initially).
