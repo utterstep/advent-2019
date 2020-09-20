@@ -1,4 +1,8 @@
-on: [push, pull_request]
+on:
+  push: true
+  pull_request: true
+  schedule:
+    - cron: "0 0 * * SAT"
 
 name: CI
 
