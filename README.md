@@ -21,8 +21,8 @@ physical id     : 0
 
 utterstep@utterstep-nix:~/my/advent-2019$ hyperfine --warmup 20 ./target/release/run-all
 Benchmark #1: ./target/release/run-all
-  Time (mean ± σ):     121.1 ms ±   0.5 ms    [User: 109.3 ms, System: 11.8 ms]
-  Range (min … max):   120.1 ms … 122.3 ms    24 runs
+  Time (mean ± σ):     122.4 ms ±   0.4 ms    [User: 107.4 ms, System: 15.0 ms]
+  Range (min … max):   121.6 ms … 123.4 ms    24 runs
 ```
 
 Currently `day-12` (2nd part) is taking ~50% of all running time (~68ms, down from ~400ms initially).
@@ -32,5 +32,6 @@ Currently `day-12` (2nd part) is taking ~50% of all running time (~68ms, down fr
 * [day-3](./day-2): check, why precomputed sums looks slower, than brute force approach
 * [day-7](./day-7): get rid of [permutohedron](https://crates.io/crates/permutohedron) crate
 * [day-13](./day-13): more effective bot strategy (current time ~9ms because there are lot of redundant moves in the end)
+* [day-14](./day-14): compute `SolutionPrecalc` once for both parts
 * [day-17](./day-17): current solution looks like tailored to the specific class of cases. Rewrite in more generic way OR prove that it's generic
 * [day-19](./day-19): determine error sign — currently I'm not totaly sure that constants are good for every possible input (though they are quite conservative)

@@ -36,6 +36,8 @@ Total energy after 1000 runs: 8310
 System cycle length is: 319290382980408
 blocks on screen: 324
 Final score: 15957
+You need 628586 ORE to produce one FUEL
+You can produce 3209254 FUEL from 1000000000000 ORE
 sum of the alignment parameters is: 4372
 sum of cleaned dust: 945911
 points are affected by tractor ray: 209

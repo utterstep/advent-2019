@@ -171,6 +171,11 @@ mod tests {
             return TestResult::discard();
         }
 
+        if arr.iter().collect::<std::collections::BTreeSet<_>>().len() != arr.len() {
+            // TODO: test case arr = [12, 12] also
+            return TestResult::discard();
+        }
+
         let arr_rep = arr
             .iter()
             .cloned()
