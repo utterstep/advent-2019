@@ -105,13 +105,7 @@ impl Space {
         let robot_idx = self
             .map
             .iter()
-            .position(|object| {
-                if let Object::Robot(_) = object {
-                    true
-                } else {
-                    false
-                }
-            })
+            .position(|object| matches!(object, Object::Robot(_)))
             .expect("there is no robot on the map!");
 
         SpaceTraverse {
