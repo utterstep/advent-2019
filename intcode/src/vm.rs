@@ -68,7 +68,7 @@ impl IntcodeVM {
             let mut parameters = self.get_params(&opcode)?;
 
             macro_rules! process_params {
-                ([$($var: ident),+] => $action: block) => {
+                ($($var: ident),+ => $action: block) => {
                     $(let $var = parameters.next().unwrap();)+
 
                     drop(parameters);
@@ -79,7 +79,7 @@ impl IntcodeVM {
 
             match opcode.operation {
                 Operation::Add => {
-                    process_params!([a, b, target] => {
+                    process_params!(a, b, target => {
                         let a = self.read(a)?;
                         let b = self.read(b)?;
 
@@ -87,7 +87,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::Multiply => {
-                    process_params!([a, b, target] => {
+                    process_params!(a, b, target => {
                         let a = self.read(a)?;
                         let b = self.read(b)?;
 
@@ -95,7 +95,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::Input => {
-                    process_params!([target] => {
+                    process_params!(target => {
                         match input.next() {
                             Some(value) => self.write(target, *value.borrow())?,
                             None => return Ok(IntcodeVmStopCause::WaitingForInput),
@@ -103,12 +103,12 @@ impl IntcodeVM {
                     });
                 }
                 Operation::Output => {
-                    process_params!([source] => {
+                    process_params!(source => {
                         output.push(self.read(source)?);
                     });
                 }
                 Operation::JumpIfTrue => {
-                    process_params!([a, target] => {
+                    process_params!(a, target => {
                         if self.read(a)? != 0 {
                             self.current_position = self.read(target)? as usize;
 
@@ -117,7 +117,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::JumpIfFalse => {
-                    process_params!([a, target] => {
+                    process_params!(a, target => {
                         if self.read(a)? == 0 {
                             self.current_position = self.read(target)? as usize;
 
@@ -126,7 +126,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::LessThan => {
-                    process_params!([a, b, target] => {
+                    process_params!(a, b, target => {
                         if self.read(a)? < self.read(b)? {
                             self.write(target, 1)?;
                         } else {
@@ -135,7 +135,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::Equals => {
-                    process_params!([a, b, target] => {
+                    process_params!(a, b, target => {
                         if self.read(a)? == self.read(b)? {
                             self.write(target, 1)?;
                         } else {
@@ -144,7 +144,7 @@ impl IntcodeVM {
                     });
                 }
                 Operation::AdjRelBase => {
-                    process_params!([value] => {
+                    process_params!(value => {
                         self.relative_base += self.read(value)?;
                     });
                 }

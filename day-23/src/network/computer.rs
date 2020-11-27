@@ -37,8 +37,8 @@ impl Computer {
             .map(|iter| iter.tuples::<(_, _, _)>().map(Packet::from))
     }
 
-    pub fn inbox_size(&self) -> usize {
-        self.inbox.len()
+    pub fn inbox_empty(&self) -> bool {
+        self.inbox.is_empty()
     }
 
     #[cfg(debug_assertions)]

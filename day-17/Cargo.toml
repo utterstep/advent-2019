@@ -13,6 +13,6 @@ intcode = { path = "../intcode" }
 itertools = "0.9"
 
 [dev-dependencies]
-indoc = "0.3.4"
+indoc = "1"
 quickcheck = "0.9"
 quickcheck_macros = "0.9"

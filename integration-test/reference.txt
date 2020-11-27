@@ -44,6 +44,6 @@ points are affected by tractor ray: 209
 square base is at: 10450905
 card 2019 is at idx 3143
 there is card 3920265924568 at idx 2020
-target: Transmission { src: 45, payload: Packet { dst: 255, x: 22469, y: 17949 } }
-target: Transmission { src: 255, payload: Packet { dst: 255, x: 22469, y: 12326 } }
+target: Transmission { src: 45, payload: Packet { dst: 255, coords: [22469, 17949] } }
+target: Transmission { src: 255, payload: Packet { dst: 255, coords: [22469, 12326] } }
 first world that repeats has biodiversity rating of: 26840049

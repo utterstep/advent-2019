@@ -41,7 +41,7 @@ impl Network {
     }
 
     fn is_idle(&self) -> bool {
-        self.buffer.is_empty() && self.computers.iter().all(|c| c.inbox_size() == 0)
+        self.buffer.is_empty() && self.computers.iter().all(Computer::inbox_empty)
     }
 }
 
