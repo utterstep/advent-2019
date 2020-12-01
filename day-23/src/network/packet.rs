@@ -3,7 +3,7 @@ use std::iter::IntoIterator;
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Packet {
     dst: usize,
-    coords: [i64; 2]
+    coords: [i64; 2],
 }
 
 impl Packet {
@@ -40,7 +40,7 @@ impl IntoIterator for Packet {
 #[derive(Debug)]
 pub struct PacketIterator {
     data: [i64; 2],
-    current: usize
+    current: usize,
 }
 
 impl Iterator for PacketIterator {
@@ -48,9 +48,7 @@ impl Iterator for PacketIterator {
 
     fn next(&mut self) -> Option<i64> {
         match &mut self.current {
-            &mut 2 => {
-                None
-            }
+            &mut 2 => None,
             idx => {
                 let val = self.data[*idx];
                 *idx += 1;
@@ -68,7 +66,13 @@ mod tests {
     #[test]
     fn test_packet_iteration() {
         let packet: Packet = (1, 2, 3).into();
-        assert_eq!(packet, Packet { dst: 1, coords: [2, 3] });
+        assert_eq!(
+            packet,
+            Packet {
+                dst: 1,
+                coords: [2, 3]
+            }
+        );
         assert_eq!(packet.dst(), 1);
         assert_eq!(packet.into_iter().collect::<Vec<_>>(), vec![2, 3]);
     }

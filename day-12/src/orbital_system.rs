@@ -52,9 +52,9 @@ impl FromStr for Moon {
             .split(',')
             .filter_map(|coord| coord.split('=').nth(1)?.parse::<i32>().ok());
 
-        let x = coords.next().ok_or_else(|| IncorrectMoonFormat {})?;
-        let y = coords.next().ok_or_else(|| IncorrectMoonFormat {})?;
-        let z = coords.next().ok_or_else(|| IncorrectMoonFormat {})?;
+        let x = coords.next().ok_or(IncorrectMoonFormat {})?;
+        let y = coords.next().ok_or(IncorrectMoonFormat {})?;
+        let z = coords.next().ok_or(IncorrectMoonFormat {})?;
 
         Ok(Self::new(x, y, z))
     }
