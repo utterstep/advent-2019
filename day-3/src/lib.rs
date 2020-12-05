@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, error::Error};
+use std::{convert::TryFrom, error::Error, path::PathBuf};
 
 use advent_utils::{parse_file, Part, Solver};
 
@@ -15,10 +15,10 @@ pub struct Solution {
     w2: Wire,
 }
 
-impl TryFrom<String> for Solution {
+impl TryFrom<PathBuf> for Solution {
     type Error = Box<dyn Error>;
 
-    fn try_from(input_file: String) -> Result<Self, Self::Error> {
+    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
         let mut wires: Vec<Wire> = parse_file(input_file)?;
         let w2 = wires.pop().unwrap();
         let w1 = wires.pop().unwrap();

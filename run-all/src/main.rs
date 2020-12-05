@@ -8,7 +8,7 @@ fn run<S: Solver>() -> Result<(), Box<dyn Error>> {
         var("BASE_PATH").unwrap_or_else(|_| ".".to_owned()),
         S::day_number()
     );
-    let solver = S::try_from(input_file)?;
+    let solver = S::try_from(input_file.into())?;
 
     for part in S::implemented_parts() {
         println!("{}", solver.solve(part));

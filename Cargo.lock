@@ -2,8 +2,8 @@
 # It is not intended for manual editing.
 [[package]]
 name = "advent-utils"
-version = "0.1.0"
-source = "git+https://github.com/utter-step/advent-utils#9e87614392176dce81bbc1d2bb69da6184a90aab"
+version = "0.2.0"
+source = "git+https://github.com/utter-step/advent-utils#e341a87d0d4b27753483b8655bd525a8b5fe2f0f"
 dependencies = [
  "envy",
  "serde",
@@ -29,9 +29,9 @@ dependencies = [
 
 [[package]]
 name = "bytecount"
-version = "0.6.1"
+version = "0.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c39a773ba75db12126d8d383f1bdbf7eb92ea47ec27dd0557aff1fedf172764c"
+checksum = "72feb31ffc86498dacdbd0fcebb56138e7177a8cc5cea4516031d15ae85a742e"
 
 [[package]]
 name = "cfg-if"
@@ -544,9 +544,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.51"
+version = "1.0.53"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3b4f34193997d92804d359ed09953e25d5138df6bcc055a71bf68ee89fdf9223"
+checksum = "8833e20724c24de12bbaba5ad230ea61c3eafb05b881c7c9d3cfe8638b187e68"
 dependencies = [
  "proc-macro2",
  "quote",

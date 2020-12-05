@@ -1,4 +1,4 @@
-use std::error::Error;
+use std::{error::Error, path::PathBuf};
 
 use advent_utils::{get_custom_config, Part, Solver};
 use serde::Deserialize;
@@ -7,7 +7,7 @@ use day_13::{EmulatorMode, Solution};
 
 #[derive(Debug, Deserialize)]
 struct Config {
-    input_file: String,
+    input_file: PathBuf,
     part: Part,
     mode: Option<EmulatorMode>,
 }

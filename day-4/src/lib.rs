@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, error::Error};
+use std::{convert::TryFrom, error::Error, path::PathBuf};
 
 use advent_utils::{read_file, Part, Solver};
 
@@ -63,10 +63,10 @@ pub struct Solution {
     max: u32,
 }
 
-impl TryFrom<String> for Solution {
+impl TryFrom<PathBuf> for Solution {
     type Error = Box<dyn Error>;
 
-    fn try_from(input_file: String) -> Result<Self, Self::Error> {
+    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
         let data = read_file(input_file)?;
         let mut parsed = data.trim().split('-').map(str::parse);
 

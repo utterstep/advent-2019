@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, error::Error};
+use std::{convert::TryFrom, error::Error, path::PathBuf};
 
 use advent_utils::{parse_file, Part, Solver};
 use enum_dispatch::enum_dispatch;
@@ -46,10 +46,10 @@ pub struct Solution {
     mode: SimulationMode,
 }
 
-impl TryFrom<String> for Solution {
+impl TryFrom<PathBuf> for Solution {
     type Error = Box<dyn Error>;
 
-    fn try_from(input_file: String) -> Result<Self, Self::Error> {
+    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
         let movements: Vec<Movement> = parse_file(input_file)?;
 
         Ok(Self {
@@ -100,7 +100,7 @@ impl Solver for Solution {
 
 impl Solution {
     pub fn try_from_file_with_mode(
-        input_file: String,
+        input_file: PathBuf,
         mode: SimulationMode,
     ) -> Result<Self, Box<dyn Error>> {
         Self::try_from(input_file).map(|mut solution| {

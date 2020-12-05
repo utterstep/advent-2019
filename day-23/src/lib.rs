@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, convert::TryFrom, error::Error};
+use std::{collections::BTreeSet, convert::TryFrom, error::Error, path::PathBuf};
 
 use advent_utils::{read_file, Part, Solver};
 use intcode::Interpreter;
@@ -14,10 +14,10 @@ pub struct Solution {
     network: Network,
 }
 
-impl TryFrom<String> for Solution {
+impl TryFrom<PathBuf> for Solution {
     type Error = Box<dyn Error>;
 
-    fn try_from(input_file: String) -> Result<Self, Self::Error> {
+    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
         let interpreter: Interpreter = read_file(input_file)?.parse()?;
         let network = Network::new(&interpreter, NETWORK_SIZE);
 
