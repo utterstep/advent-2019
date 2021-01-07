@@ -101,22 +101,22 @@ impl World {
         Self(next)
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, clippy::unusual_byte_groupings)]
     pub fn left(self) -> usize {
         (self.0 & 0b00001_00001_00001_00001_00001).count_ones() as usize
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, clippy::unusual_byte_groupings)]
     pub fn right(self) -> usize {
         (self.0 & 0b10000_10000_10000_10000_10000).count_ones() as usize
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, clippy::unusual_byte_groupings)]
     pub fn top(self) -> usize {
         (self.0 & 0b00000_00000_00000_00000_11111).count_ones() as usize
     }
 
-    #[allow(dead_code)]
+    #[allow(dead_code, clippy::unusual_byte_groupings)]
     pub fn bottom(self) -> usize {
         (self.0 & 0b11111_00000_00000_00000_00000).count_ones() as usize
     }

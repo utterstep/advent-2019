@@ -7,7 +7,7 @@ use super::reactions::{InvalidFormat, Reaction};
 const FUEL: &str = "FUEL";
 const ORE: &str = "ORE";
 
-fn parse_input<'a>(recipe_str: &'a str) -> Result<Map<&'a str, Reaction<'a>>, InvalidFormat> {
+fn parse_input(recipe_str: &str) -> Result<Map<&str, Reaction<'_>>, InvalidFormat> {
     let mut map = Map::default();
 
     for line in recipe_str.split('\n') {
