@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 
 mod sif;
 
@@ -11,11 +11,11 @@ pub struct Solution {
     image: SpaceImage,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let pixels: Vec<_> = read_file(input_file)?
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let pixels: Vec<_> = input_data
             .trim()
             .chars()
             .map(|c| c.to_digit(10).unwrap() as u8)

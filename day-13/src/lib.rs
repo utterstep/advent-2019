@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, path::PathBuf, str::FromStr};
 
 use advent_utils::{read_file, Part, Solver};
 
@@ -16,11 +16,11 @@ pub struct Solution {
     mode: Option<EmulatorMode>,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let interpreter: Interpreter = read_file(input_file)?.parse()?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let interpreter: Interpreter = input_data.parse()?;
 
         Ok(Self {
             interpreter,
@@ -66,10 +66,12 @@ impl Solution {
         input_file: PathBuf,
         mode: Option<EmulatorMode>,
     ) -> Result<Self, Box<dyn Error>> {
-        Self::try_from(input_file).map(|mut solution| {
-            solution.mode = mode;
+        read_file(input_file)?
+            .parse()
+            .map(|mut solution: Solution| {
+                solution.mode = mode;
 
-            solution
-        })
+                solution
+            })
     }
 }

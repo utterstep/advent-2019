@@ -1,6 +1,6 @@
-use std::{collections::BTreeSet, convert::TryFrom, error::Error, path::PathBuf};
+use std::{collections::BTreeSet, error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 use intcode::Interpreter;
 
 mod network;
@@ -14,11 +14,11 @@ pub struct Solution {
     network: Network,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let interpreter: Interpreter = read_file(input_file)?.parse()?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let interpreter: Interpreter = input_data.parse()?;
         let network = Network::new(&interpreter, NETWORK_SIZE);
 
         Ok(Self { network })

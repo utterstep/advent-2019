@@ -1,14 +1,15 @@
-use std::{env::var, error::Error};
+use std::{env::var, error::Error, str::FromStr};
 
-use advent_utils::Solver;
+use advent_utils::{read_file, Solver};
 
-fn run<S: Solver>() -> Result<(), Box<dyn Error>> {
+fn run<S: Solver + FromStr<Err = Box<dyn Error>>>() -> Result<(), Box<dyn Error>> {
     let input_file = format!(
         "{}/day-{}/input.txt",
         var("BASE_PATH").unwrap_or_else(|_| ".".to_owned()),
         S::day_number()
     );
-    let solver = S::try_from(input_file.into())?;
+    let input_data = read_file(input_file)?;
+    let solver: S = input_data.parse()?;
 
     for part in S::implemented_parts() {
         println!("{}", solver.solve(part));

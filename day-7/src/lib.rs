@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 
 mod amplifier;
 
@@ -9,13 +9,11 @@ pub struct Solution {
     code: Vec<i64>,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let code_str = read_file(input_file)?;
-
-        let code: Vec<_> = code_str
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let code: Vec<_> = input_data
             .trim()
             .split(',')
             .map(str::parse)

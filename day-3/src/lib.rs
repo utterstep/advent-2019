@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, str::FromStr};
 
-use advent_utils::{parse_file, Part, Solver};
+use advent_utils::{parse_raw_data, Part, Solver};
 
 mod direction;
 mod point;
@@ -15,11 +15,11 @@ pub struct Solution {
     w2: Wire,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let mut wires: Vec<Wire> = parse_file(input_file)?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let mut wires: Vec<Wire> = parse_raw_data(input_data)?;
         let w2 = wires.pop().unwrap();
         let w1 = wires.pop().unwrap();
 

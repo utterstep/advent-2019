@@ -2,8 +2,8 @@
 # It is not intended for manual editing.
 [[package]]
 name = "advent-utils"
-version = "0.2.0"
-source = "git+https://github.com/utter-step/advent-utils#e341a87d0d4b27753483b8655bd525a8b5fe2f0f"
+version = "0.3.0"
+source = "git+https://github.com/utter-step/advent-utils#e5509fd75de8d8b04c32ec1e4e4fd85ee9f71199"
 dependencies = [
  "envy",
  "serde",

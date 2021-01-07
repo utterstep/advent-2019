@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{convert::TryFrom, error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 
 mod precalc;
 mod reactions;
@@ -12,11 +12,11 @@ pub struct Solution {
     recipes: String,
 }
 
-impl<'a> TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let recipes = read_file(input_file)?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let recipes = input_data.to_owned();
 
         Ok(Self { recipes })
     }

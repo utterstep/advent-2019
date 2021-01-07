@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 
 fn is_possible_password_weak(mut n: u32) -> bool {
     let mut current = n % 10;
@@ -63,12 +63,11 @@ pub struct Solution {
     max: u32,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let data = read_file(input_file)?;
-        let mut parsed = data.trim().split('-').map(str::parse);
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let mut parsed = input_data.trim().split('-').map(str::parse);
 
         let min = parsed.next().unwrap()?;
         let max = parsed.next().unwrap()?;

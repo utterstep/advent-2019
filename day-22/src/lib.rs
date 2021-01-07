@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{error::Error, path::PathBuf, str::FromStr};
 
-use advent_utils::{parse_file, Part, Solver};
+use advent_utils::{parse_raw_data, read_file, Part, Solver};
 use enum_dispatch::enum_dispatch;
 use serde::Deserialize;
 
@@ -46,11 +46,11 @@ pub struct Solution {
     mode: SimulationMode,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let movements: Vec<Movement> = parse_file(input_file)?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let movements: Vec<Movement> = parse_raw_data(input_data)?;
 
         Ok(Self {
             movements,
@@ -103,10 +103,12 @@ impl Solution {
         input_file: PathBuf,
         mode: SimulationMode,
     ) -> Result<Self, Box<dyn Error>> {
-        Self::try_from(input_file).map(|mut solution| {
-            solution.mode = mode;
+        read_file(input_file)?
+            .parse()
+            .map(|mut solution: Solution| {
+                solution.mode = mode;
 
-            solution
-        })
+                solution
+            })
     }
 }

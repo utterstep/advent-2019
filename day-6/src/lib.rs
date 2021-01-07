@@ -1,6 +1,6 @@
-use std::{convert::TryFrom, error::Error, path::PathBuf};
+use std::{convert::TryFrom, error::Error, str::FromStr};
 
-use advent_utils::{read_file, Part, Solver};
+use advent_utils::{Part, Solver};
 
 mod orbit_graph;
 
@@ -11,11 +11,11 @@ pub struct Solution {
     input: String,
 }
 
-impl TryFrom<PathBuf> for Solution {
-    type Error = Box<dyn Error>;
+impl FromStr for Solution {
+    type Err = Box<dyn Error>;
 
-    fn try_from(input_file: PathBuf) -> Result<Self, Self::Error> {
-        let input = read_file(input_file)?;
+    fn from_str(input_data: &str) -> Result<Self, Self::Err> {
+        let input = input_data.to_owned();
 
         Ok(Self { input })
     }
