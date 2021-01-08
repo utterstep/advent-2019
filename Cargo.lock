@@ -3,6 +3,7 @@
 [[package]]
 name = "advent-utils"
 version = "0.4.0"
+source = "git+https://github.com/utter-step/advent-utils#d53d7c7fd529409526173e5f8895747a138dc525"
 dependencies = [
  "envy",
  "serde",
