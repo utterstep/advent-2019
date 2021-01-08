@@ -12,6 +12,9 @@ advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 enum_dispatch = "0.3"
 serde = { version = "1", features = ["derive"] }
 
+displaydoc = "0.1"
+thiserror = "1"
+
 [dev-dependencies]
 quickcheck = "0.9"
 quickcheck_macros = "0.9"

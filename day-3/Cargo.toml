@@ -10,3 +10,6 @@ edition = "2018"
 advent-utils = { git = "https://github.com/utter-step/advent-utils" }
 
 itertools = "0.9"
+
+displaydoc = "0.1"
+thiserror = "1"

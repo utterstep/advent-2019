@@ -27,6 +27,9 @@ members = [
     "run-all",
 ]
 
+[patch."https://github.com/utter-step/advent-utils"]
+advent-utils = { path = "../advent-utils" }
+
 [profile.release]
 debug = true
 lto = true

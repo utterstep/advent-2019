@@ -1,3 +1,8 @@
+use std::num::ParseIntError;
+
+use displaydoc::Display;
+use thiserror::Error;
+
 #[derive(Debug, PartialEq)]
 pub enum Direction {
     Up(i32),
@@ -6,9 +11,12 @@ pub enum Direction {
     Left(i32),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Display, Error)]
 pub enum ParseDirectionError {
+    /// Unknown direction format
     UnknownFormat,
+    /// Distance specification error: {0}
+    InvalidDistance(#[from] ParseIntError),
 }
 
 impl std::str::FromStr for Direction {
@@ -16,9 +24,7 @@ impl std::str::FromStr for Direction {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let direction = &s[..1];
-        let distance = s[1..]
-            .parse()
-            .map_err(|_| ParseDirectionError::UnknownFormat)?;
+        let distance = s[1..].parse()?;
 
         Ok(match direction {
             "U" => Direction::Up(distance),

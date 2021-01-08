@@ -1,4 +1,7 @@
-use std::str::FromStr;
+use std::{num::ParseIntError, str::FromStr};
+
+use displaydoc::Display;
+use thiserror::Error;
 
 #[derive(Debug, PartialEq, Eq, Copy, Clone)]
 pub enum Movement {
@@ -7,10 +10,12 @@ pub enum Movement {
     Cut(i64),
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Display, Error)]
 pub enum MovementParseError {
+    /// Unknown movements
     UnknownMovement,
-    IntParseError,
+    /// Error while parsing integer: {0}
+    IntParseError(#[from] ParseIntError),
 }
 
 const DEAL_IN: &str = "deal into new stack";
@@ -23,18 +28,10 @@ impl FromStr for Movement {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         if s == DEAL_IN {
             Ok(Self::DealIn)
-        } else if s.starts_with(DEAL_WITH_INCREMENT) {
-            Ok(Self::DealWithIncrement(
-                s[DEAL_WITH_INCREMENT.len() + 1..]
-                    .parse()
-                    .map_err(|_| MovementParseError::IntParseError)?,
-            ))
-        } else if s.starts_with(CUT) {
-            Ok(Self::Cut(
-                s[CUT.len() + 1..]
-                    .parse()
-                    .map_err(|_| MovementParseError::IntParseError)?,
-            ))
+        } else if let Some(increment) = s.strip_prefix(DEAL_WITH_INCREMENT) {
+            Ok(Self::DealWithIncrement(increment.parse()?))
+        } else if let Some(cut) = s.strip_prefix(CUT) {
+            Ok(Self::Cut(cut.parse()?))
         } else {
             Err(MovementParseError::UnknownMovement)
         }
