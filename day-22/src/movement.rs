@@ -19,8 +19,8 @@ pub enum MovementParseError {
 }
 
 const DEAL_IN: &str = "deal into new stack";
-const DEAL_WITH_INCREMENT: &str = "deal with increment";
-const CUT: &str = "cut";
+const DEAL_WITH_INCREMENT: &str = "deal with increment ";
+const CUT: &str = "cut ";
 
 impl FromStr for Movement {
     type Err = MovementParseError;
