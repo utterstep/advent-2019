@@ -4,10 +4,6 @@ use advent_utils::{parse_raw_data, read_file, Part, Solver};
 use enum_dispatch::enum_dispatch;
 use serde::Deserialize;
 
-#[cfg(test)]
-#[macro_use(quickcheck)]
-extern crate quickcheck_macros;
-
 mod movement;
 mod simulator;
 

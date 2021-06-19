@@ -1,6 +1,5 @@
 use crate::{Movement, Simulator};
 
-mod algo;
 mod model;
 
 use model::Model;

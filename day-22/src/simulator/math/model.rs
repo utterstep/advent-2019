@@ -1,6 +1,6 @@
 use crate::Movement;
 
-use super::algo;
+use advent_utils::algo::numeric as algo;
 
 #[derive(Debug)]
 /// Mathematical model of shuffle routine.
