@@ -181,7 +181,7 @@ impl IntcodeVM {
             .ok_or(IntcodeVmError::PartialOpcode)?
             .iter()
             .zip(opcode.parameter_modes.iter())
-            .map(|(&value, &mode)| Parameter { value, mode }))
+            .map(|(&value, &mode)| Parameter { mode, value }))
     }
 
     #[inline]

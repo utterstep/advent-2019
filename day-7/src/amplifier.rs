@@ -13,7 +13,7 @@ fn get_amplifier_results<'a>(
             let mut vm: Interpreter = code.to_vec().into();
             vm.run_with_input(once(knob).chain(output.iter()));
 
-            Ok(vm.into_output()?)
+            vm.into_output()
         })
         .map(|output| output.first().copied())
         .ok()

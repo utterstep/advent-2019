@@ -46,8 +46,8 @@ impl From<i64> for Opcode {
             };
 
             return Self {
-                parameter_modes,
                 operation,
+                parameter_modes,
             };
         }
 
